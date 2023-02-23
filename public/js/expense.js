@@ -17,21 +17,22 @@ btn.addEventListener("click", (e) => {
     axios
     .post("http://localhost:3000/expense", obj)
     .then((data) => {
+      let expense = data.data.result;
       let li = document.createElement("li");
       li.className = "li";
       li.appendChild(
         document.createTextNode(
-          amount.value +
+          expense.amount +
             " " +
             "-" +
             " " +
-            desc.value +
+            expense.description +
             " " +
             "-" +
             " " +
             "On" +
             " " +
-            cat.value +
+            expense.category +
             " "
         )
       );
@@ -49,21 +50,22 @@ btn.addEventListener("click", (e) => {
  }else{
     axios.put("http://localhost:3000/"+desc.title,obj)
     .then((data) => {
+      let expense = data.data.result;
         let li = document.createElement("li");
         li.className = "li";
         li.appendChild(
           document.createTextNode(
-            amount.value +
+            expense.amount +
               " " +
               "-" +
               " " +
-              desc.value +
+              expense.description +
               " " +
               "-" +
               " " +
               "On" +
               " " +
-              cat.value +
+              expense.category +
               " "
           )
         );

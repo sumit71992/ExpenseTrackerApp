@@ -10,8 +10,9 @@ exports.addExpense = (req, res, next) => {
     description,
     category
   })
-    .then((res) => {
+    .then((result) => {
       console.log("Created Product");
+      return res.json({result});
     })
     .catch((err) => console.log(err));
 };
@@ -29,7 +30,8 @@ exports.deleteExpense = (req, res, next) => {
     .then((expense) => {
       return expense.destroy();
     }).then(result=>{
-      return "deleted"
+      console.log("Deleted")
+      return res.json({result});
     })
     .catch((err) => console.log(err));
 };
@@ -43,7 +45,6 @@ exports.getEditExpense = (req, res, next) => {
 };
 exports.updateExpense = (req, res, next) => {
   const id = req.params.id;
-  
   const amount = req.body.amount;
   const description = req.body.description;
   const category = req.body.category;
