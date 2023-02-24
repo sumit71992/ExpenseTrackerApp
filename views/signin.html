@@ -10,19 +10,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.2/axios.min.js"
         integrity="sha512-NCiXRSV460cHD9ClGDrTbTaw0muWUBf/zB/yLzJavRsPNUl9ODkUVmUHsZtKu17XknhsGlmyVoJxLg/ZQQEeGA=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <title>SignUp</title>
+    <title>SignIn</title>
 </head>
 
 <body>
     <div class="container-fluid p-5">
         <div class="container w-25 border border-secondary">
             <h6 class="text-center message text-danger"></h6>
-            <h3 class="text-center text-secondary mt-3">Signup to ExpenseTracker App</h3>
+            <h3 class="text-center text-secondary mt-3">Signin to ExpenseTracker App</h3>
             <form class="form">
-                <div class="name p-2">
-                    <label for="name">Name:</label>
-                    <input class="w-100" id="name" type="text" name="name" value="">
-                </div>
                 <div class="email p-2">
                     <label for="email">Email:</label>
                     <input class="w-100" id="email" type="email" name="email" value="">
@@ -32,41 +28,39 @@
                     <input class="w-100" id="password" type="password" name="password" value="">
                 </div>
                 <div class="p-2 text-center">
-                    <button id="signup" type="submit" class="btn btn-success">Signup</button>
+                    <button id="signin" type="submit" class="btn btn-success">Signin</button>
                 </div>
                 <div class="text-center">
-                    <p>Already have an account? <a class="link-primary text-decoration-none"
-                            href="./signin.html">Login</a></p>
+                    <p>Don't have an account? <a class="link-primary text-decoration-none"
+                            href="./signup.html">Signup</a></p>
                 </div>
             </form>
         </div>
     </div>
     <script>
-        const signup = document.querySelector("#signup");
-        const names = document.getElementById("name");
+        const signin = document.querySelector("#signin");
         const email = document.getElementById("email");
         let message = document.querySelector(".message");
         const password = document.getElementById("password");
-
-        signup.addEventListener("click", (e) => {
+        signin.addEventListener('click', (e) => {
             e.preventDefault();
             const obj = {
-                name: names.value,
                 email: email.value,
-                password: password.value,
+                password: password.value
             };
-            axios
-                .post("http://localhost:3000/signup", obj)
-                .then((user) => {
-                    if (user.data.message) {
+            axios.post('http://localhost:3000/signin', obj)
+                .then(user => {
+                    if (user.data.message==="success") {
+                        message.className='text-success text-center';
                         message.appendChild(document.createTextNode(user.data.message));
+                        setTimeout(()=>{window.location.replace("./expense.html")},2000);
+                        
                     } else {
-                        window.location.replace("./signin.html");
+                        message.appendChild(document.createTextNode(user.data.message));
+                        setTimeout(()=>{window.location.reload()}, 3000);
                     }
-                })
-                .catch((err) => console.log(err));
+                }).catch(err => console.log(err));
         });
-
     </script>
 </body>
 
