@@ -26,13 +26,13 @@ const signin = (req, res, next) => {
   User.findOne({ where: { email: email } })
     .then((usr) => {
       if (!usr) {
-        return res.json({ message: "Email not registered" });
+        return res.status(404).json({ message: "Email not registered" });
       } else if (usr.password === password) {
         console.log("success");
         return res.json({ message: "login success" });
       } else {
         console.log("Invalid");
-        return res.json({ message: "Password Invalid" });
+        return res.status(401).json({ message: "Password Invalid" });
       }
     })
     .catch((err) => console.log(err));

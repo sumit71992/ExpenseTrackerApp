@@ -50,16 +50,15 @@
             };
             axios.post('http://localhost:3000/signin', obj)
                 .then(user => {
-                    if (user.data.message==="success") {
-                        message.className='text-success text-center';
-                        message.appendChild(document.createTextNode(user.data.message));
-                        setTimeout(()=>{window.location.replace("./expense.html")},2000);
-                        
-                    } else {
-                        message.appendChild(document.createTextNode(user.data.message));
-                        setTimeout(()=>{window.location.reload()}, 3000);
-                    }
-                }).catch(err => console.log(err));
+                    let msg = user.data.message;
+                    message.className = 'text-success text-center';
+                    message.appendChild(document.createTextNode(msg));
+                    setTimeout(() => { window.location.replace("./expense.html") }, 2000);
+                }).catch(err => {
+                    let msg = err.response.data.message;
+                    message.appendChild(document.createTextNode(msg));
+                    setTimeout(() => { window.location.reload() }, 3000);
+                });
         });
     </script>
 </body>
