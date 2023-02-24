@@ -1,6 +1,6 @@
 const User = require('../models/userModel');
 
-const signup = (req, res, next)=>{
+const signup = (req, res, next) =>{
     const {name,email,password} = req.body;
     console.log(name,email,password)
     User.create({
