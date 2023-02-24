@@ -4,7 +4,6 @@ exports.addExpense = (req, res, next) => {
   const amount = req.body.amount;
   const description = req.body.description;
   const category = req.body.category;
-  console.log("category",category);
   Expense.create({
     amount,
     description,

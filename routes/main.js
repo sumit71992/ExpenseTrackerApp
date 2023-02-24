@@ -1,5 +1,5 @@
 const express = require('express');
-
+const userController = require('../controllers/userController');
 const expenseController = require('../controllers/expenseController');
 
 const router = express.Router();
@@ -9,6 +9,7 @@ router.get('/', expenseController.getAllExpenses);
 router.get('/:id', expenseController.getEditExpense);
 
 // appointments => POST
+router.post('/signup', userController.signup);
 router.post('/expense', expenseController.addExpense);
 
 
