@@ -11,9 +11,11 @@ exports.addExpense = (req, res, next) => {
   })
     .then((result) => {
       console.log("Created Product");
-      return res.json({result});
+      next();
+      // return res.json({result});
     })
     .catch((err) => console.log(err));
+    
 };
 exports.getAllExpenses = (req, res, next) => {
   Expense.findAll()

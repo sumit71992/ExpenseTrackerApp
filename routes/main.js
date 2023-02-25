@@ -11,7 +11,7 @@ router.get('/:id', expenseController.getEditExpense);
 // appointments => POST
 router.post('/signup', userController.signup);
 router.post('/signin',userController.signin,expenseController.getAllExpenses)
-router.post('/expense', expenseController.addExpense);
+router.post('/expense', expenseController.addExpense, expenseController.getAllExpenses);
 
 
 //// appointments => PUT

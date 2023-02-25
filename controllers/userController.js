@@ -41,6 +41,8 @@ const signin = async(req, res, next) => {
                   if (!result) {
                     return res.status(401).json({ message: "Password Invalid" });
                   } else {
+                    req.user = result;
+                    console.log("user",req.user)
                     return res.json({ message: "login success" });
                   }
                 })

@@ -1,58 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.2/axios.min.js" integrity="sha512-NCiXRSV460cHD9ClGDrTbTaw0muWUBf/zB/yLzJavRsPNUl9ODkUVmUHsZtKu17XknhsGlmyVoJxLg/ZQQEeGA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <title>ExpenseTracker</title>
-    <style>
-        input, select{
-            width: 40%;
-            height: fit-content;
-            margin-left: 2%;
-        }
-       .del{
-        margin: 0 0.4rem
-       }
-        label{
-            padding: 0;
-        }
-        .li{
-            margin-top: 1rem;
-        }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.2/axios.min.js"
+        integrity="sha512-NCiXRSV460cHD9ClGDrTbTaw0muWUBf/zB/yLzJavRsPNUl9ODkUVmUHsZtKu17XknhsGlmyVoJxLg/ZQQEeGA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="../public/css/style.css">
+    <title>Expense</title>
 </head>
+
 <body>
-    <div class="container-fluid p-0">
-        <div class=" p-5 m-0">
-            <form class="d-flex gap-1 justify-content-start">
-                <div class="expense d-flex">
-                    <label for="expense_input">Choose ExpenseAmount:</label>
-                    <input type="number" id="expense_input" value="" name="amount">
+    <div class="container-fluid grid">
+        <div class="container vh-100 p-5 border-end border-secondary">
+            <h3 class="text-center text-secondary mt-3">Expense App</h3>
+            <form class="form">
+                <div class="amount p-2">
+                    <label for="expense_input">Amount:</label>
+                    <input class="w-100" id="expense_input" type="number" name="amount" value="">
                 </div>
-                <div class="desc d-flex">
-                    <label for="description_input">Choose Description:</label>
-                    <input type="text" id="description_input" value="" name="description">
+                <div class="description p-2">
+                    <label for="description_input">Description:</label>
+                    <input class="w-100" id="description_input" type="text" name="description" value="">
                 </div>
-                <div class="category d-flex">
+                <div class="category p-2">
                     <label for="category_input">Choose Category:</label>
-                    <select name="category_input" id="category_input">
+                    <select name="category_input" id="category_input" class="w-100">
                         <option value="fuel">Fuel</option>
                         <option value="movie">Movie</option>
-                        <option value="grocery" selected>Grocery</option>
+                        <option value="grocery">Grocery</option>
                         <option value="education">Education</option>
                         <option value="health">Health</option>
                     </select>
                 </div>
-                <button id="btn" class="btn btn-secondary p-0 btn-xs" type="submit">Add Expenses</button>
+                <div class="p-2 text-center">
+                    <button id="add" type="submit" class="btn btn-success">Add Expense</button>
+                </div>
             </form>
-            <ul class="lists mt-5">
-                
-            </ul>
+        </div>
+        <div class="pt-5 expense-table vh-100 d-flex flex-column align-items-center">
+           <div class="w-75 pt-3">
+            <table class="table table-hover text-secondary">
+                <thead>
+                    <tr>
+                        <th scope="col">S/N.</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="tbody">
+
+                </tbody>
+            </table>
+           </div>
+
         </div>
     </div>
     <script src="../public/js/expense.js"></script>
 </body>
+
 </html>
