@@ -2,7 +2,8 @@ let amount = document.querySelector("#expense_input");
 let desc = document.getElementById("description_input");
 let cat = document.getElementById("category_input");
 let btn = document.getElementById("add");
-
+const token = localStorage.getItem('token');
+let tbody = document.querySelector(".tbody");
 //Add Expense
 btn.addEventListener("click", (e) => {
   e.preventDefault();
@@ -11,12 +12,11 @@ btn.addEventListener("click", (e) => {
     description: desc.value,
     category: cat.value,
   };
-  const token = localStorage.getItem('token');
   if (!desc.title) {
     axios
       .post("http://localhost:3000/expense", obj,{ headers: { 'Authorization': token } })
       .then((data) => {
-        fetchExpenses(data);
+        location.reload();
       })
       .catch((err) => console.log(err));
   }
@@ -60,7 +60,6 @@ btn.addEventListener("click", (e) => {
 // });
 //fetch expense
 window.addEventListener('DOMContentLoaded', () => {
-  const token = localStorage.getItem('token');
   axios.get('http://localhost:3000/', { headers: { 'Authorization': token } })
     .then(response => {
       fetchExpenses(response);
@@ -104,16 +103,7 @@ window.addEventListener('DOMContentLoaded', () => {
 //   .catch((err) => console.log(err));
 
 // //remove expense
-// ul.addEventListener("click", (e) => {
-//   if (e.target.classList.contains("del")) {
-//     axios
-//       .delete("http://localhost:3000/" + e.target.parentElement.id)
-//       .then((res) => {
-//         ul.removeChild(e.target.parentElement);
-//       })
-//       .catch((err) => console.log(err));
-//   }
-// });
+
 // //edit expense
 // ul.addEventListener("click", editEvent);
 // function editEvent(e) {
@@ -135,7 +125,6 @@ window.addEventListener('DOMContentLoaded', () => {
 const fetchExpenses = (response) => {
   let expense = response.data.expenses;
   for (let i = 0; i < expense.length; i++) {
-    let tbody = document.querySelector(".tbody");
     let tr = document.createElement("tr");
     let th = document.createElement("th");
     let td = document.createElement("td");
@@ -153,10 +142,23 @@ const fetchExpenses = (response) => {
     td2.appendChild(document.createTextNode(expense[i].category));
     tr.appendChild(td2);
     btn.appendChild(document.createTextNode("Delete"));
-    btn.className = "btn btn-secondary p-0";
+    btn.className = "btn btn-secondary p-0 del";
     btn.setAttribute('id', expense[i].id);
+    td3.classList="del"
     td3.appendChild(btn);
     tr.appendChild(td3);
     tbody.appendChild(tr);
   }
 }
+
+//Delete Expense
+tbody.addEventListener("click", (e) => {
+  if (e.target.classList.contains("del")) {
+    axios
+      .delete("http://localhost:3000/" + e.target.id,{ headers: { 'Authorization': token } })
+      .then((res) => {
+        e.target.parentElement.parentElement.remove();
+      })
+      .catch((err) => console.log(err));
+  }
+});

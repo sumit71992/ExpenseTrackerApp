@@ -25,7 +25,7 @@ exports.addExpense = (req, res, next) => {
     
 };
 exports.getAllExpenses = (req, res, next) => {
-  Expense.findAll()
+  Expense.findAll({where:{userId:req.user.id}})
     .then((expenses) => {
       return res.json({expenses})
       })
@@ -34,7 +34,7 @@ exports.getAllExpenses = (req, res, next) => {
 
 exports.deleteExpense = (req, res, next) => {
   const id = req.params.id;
-  Expense.findByPk(id)
+  Expense.findByPk(id,{where:{userId:req.user.id}})
     .then((expense) => {
       return expense.destroy();
     }).then(result=>{

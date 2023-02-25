@@ -15,10 +15,10 @@ router.post('/expense',userAuthentication.authenticate, expenseController.addExp
 
 
 //// appointments => PUT
-router.put('/:id', expenseController.updateExpense);
+router.put('/:id', userAuthentication.authenticate, expenseController.updateExpense);
 
 // appointments => DELETE
-router.delete('/:id', expenseController.deleteExpense);
+router.delete('/:id',userAuthentication.authenticate, expenseController.deleteExpense);
 
 
 module.exports = router;
