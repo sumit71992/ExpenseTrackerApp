@@ -56,7 +56,7 @@
                 password: password.value,
             };
             axios
-                .post("http://localhost:3000/signup", obj)
+                .post("http://localhost:3000/user/signup", obj)
                 .then((user) => {
                     if (user.data.message) {
                         message.appendChild(document.createTextNode(user.data.message));

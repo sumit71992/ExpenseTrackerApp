@@ -9,18 +9,26 @@ const User = require('./models/userModel');
 
 const app = express();
 
-const mainRoutes = require('./routes/main');
+const mainRoutes = require('./routes/expenseRoute');
+const userRoutes = require('./routes/userRoute');
+const orderRoutes = require('./routes/orderRoute');
+const Order = require('./models/orderModel');
 
 app.use(cors());
 app.use(bodyParser.json({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', mainRoutes);
+app.use('/expense', mainRoutes);
+app.use('/user', userRoutes);
+app.use('/order', orderRoutes);
 
 app.use(errorController.get404);
 
-Expense.belongsTo(User,{constraints: true, onDelete: "CASCADE"});
+Expense.belongsTo(User);
 User.hasMany(Expense);
+
+User.hasMany(Order);
+Order.belongsTo(User);
 sequelize.sync().then(res=>{
     app.listen(3000);
 })

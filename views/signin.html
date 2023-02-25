@@ -48,7 +48,7 @@
                 email: email.value,
                 password: password.value
             };
-            axios.post('http://localhost:3000/signin', obj)
+            axios.post('http://localhost:3000/user/signin', obj)
                 .then(user => {
                     let msg = user.data.message;
                     message.className = 'text-success text-center';

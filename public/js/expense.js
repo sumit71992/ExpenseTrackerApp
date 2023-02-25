@@ -1,3 +1,5 @@
+const Razorpay = require("razorpay");
+
 let amount = document.querySelector("#expense_input");
 let desc = document.getElementById("description_input");
 let cat = document.getElementById("category_input");
@@ -14,7 +16,7 @@ btn.addEventListener("click", (e) => {
   };
   if (!desc.title) {
     axios
-      .post("http://localhost:3000/expense", obj,{ headers: { 'Authorization': token } })
+      .post("http://localhost:3000/expense/addexpense", obj,{ headers: { 'Authorization': token } })
       .then((data) => {
         location.reload();
       })
@@ -60,49 +62,11 @@ btn.addEventListener("click", (e) => {
 // });
 //fetch expense
 window.addEventListener('DOMContentLoaded', () => {
-  axios.get('http://localhost:3000/', { headers: { 'Authorization': token } })
+  axios.get('http://localhost:3000/expense/', { headers: { 'Authorization': token } })
     .then(response => {
       fetchExpenses(response);
     }).catch(err=>console.log(err));
 })
-// axios
-//   .get("http://localhost:3000")
-//   .then((data) => {
-//     let expenses = data.data.expenses;
-//     for (let i = 0; i < expenses.length; i++) {
-//       let li = document.createElement("li");
-//       li.className = "li";
-//       li.setAttribute("id", expenses[i].id);
-//       li.appendChild(
-//         document.createTextNode(
-//           expenses[i].amount +
-//             " " +
-//             "-" +
-//             " " +
-//             expenses[i].description +
-//             " " +
-//             "-" +
-//             " " +
-//             "On" +
-//             " " +
-//             expenses[i].category +
-//             " "
-//         )
-//       );
-//       let del = document.createElement("button");
-//       let edit = document.createElement("button");
-//       del.className = "btn btn-secondary p-0 del";
-//       edit.className = "btn btn-secondary p-0 edit";
-//       del.appendChild(document.createTextNode("Delete Expense"));
-//       edit.appendChild(document.createTextNode("Edit Expense"));
-//       li.appendChild(del);
-//       li.appendChild(edit);
-//       ul.appendChild(li);
-//     }
-//   })
-//   .catch((err) => console.log(err));
-
-// //remove expense
 
 // //edit expense
 // ul.addEventListener("click", editEvent);
@@ -155,10 +119,33 @@ const fetchExpenses = (response) => {
 tbody.addEventListener("click", (e) => {
   if (e.target.classList.contains("del")) {
     axios
-      .delete("http://localhost:3000/" + e.target.id,{ headers: { 'Authorization': token } })
+      .delete("http://localhost:3000/expense/" + e.target.id,{ headers: { 'Authorization': token } })
       .then((res) => {
         e.target.parentElement.parentElement.remove();
       })
       .catch((err) => console.log(err));
   }
 });
+
+//buy premium
+document.getElementById('premium').onclick = async function (e){
+const response = await axios.get('https://localhost:3000/order/buypremium',{headers:{'Authorization':token}});
+var options ={
+  "key": response.data.key_id,
+  "order_id": response.data.order.id,
+  "handler": async function(response){
+    await axios.post('https://localhost:3000/order/updatestatus',{
+      order_id: options.order_id,
+      payment_id: response.razorpay_payment_id,
+    },{headers:{'Authorization': token}})
+    alert("You are a Premium member now")
+  }
+};
+const rzp1 = new Razorpay(options);
+rzp1.open();
+e.preventDefault();
+
+rzp1.on('payment.failed',function (response){
+  alert('Something went Wrong')
+});
+}

@@ -1,5 +1,4 @@
 const express = require('express');
-const userController = require('../controllers/userController');
 const expenseController = require('../controllers/expenseController');
 const userAuthentication = require('../middleware/auth');
 const router = express.Router();
@@ -9,9 +8,9 @@ router.get('/', userAuthentication.authenticate, expenseController.getAllExpense
 router.get('/:id', expenseController.getEditExpense);
 
 // appointments => POST
-router.post('/signup', userController.signup);
-router.post('/signin',userController.signin,expenseController.getAllExpenses)
-router.post('/expense',userAuthentication.authenticate, expenseController.addExpense, expenseController.getAllExpenses);
+
+
+router.post('/addexpense',userAuthentication.authenticate, expenseController.addExpense, expenseController.getAllExpenses);
 
 
 //// appointments => PUT
