@@ -1,5 +1,6 @@
 const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
+const jwt = require('jsonwebtoken');
 
 const signup = (req, res, next) => {
   const { name, email, password } = req.body;
@@ -26,7 +27,9 @@ const signup = (req, res, next) => {
     })
     .catch((err) => console.log(err));
 };
-
+const authUser = (id,name)=>{
+  return jwt.sign({userId: id, userName: name},'hg7fb75ytvhjgety3787v')
+}
 const signin = async(req, res, next) => {
     try{
         const { email, password } = req.body;
@@ -38,12 +41,13 @@ const signin = async(req, res, next) => {
                bcrypt
                 .compare(password, usr.password)
                 .then((result) => {
+                  // console.log("user",usr)
                   if (!result) {
                     return res.status(401).json({ message: "Password Invalid" });
                   } else {
                     req.user = result;
-                    console.log("user",req.user)
-                    return res.json({ message: "login success" });
+                   
+                    return res.json({ message: "login success", token: authUser(usr.id, usr.name) });
                   }
                 })
                 .catch((err) => console.log(err));

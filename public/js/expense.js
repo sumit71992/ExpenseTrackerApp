@@ -11,62 +11,12 @@ btn.addEventListener("click", (e) => {
     description: desc.value,
     category: cat.value,
   };
+  const token = localStorage.getItem('token');
   if (!desc.title) {
     axios
-      .post("http://localhost:3000/expense", obj)
+      .post("http://localhost:3000/expense", obj,{ headers: { 'Authorization': token } })
       .then((data) => {
-        let expense = data.data.expenses;
-        for (let i = 0; i < expense.length; i++) {
-          let tbody = document.querySelector(".tbody");
-          let tr = document.createElement("tr");
-          let th = document.createElement("th");
-          let td = document.createElement("td");
-          let td1 = document.createElement("td");
-          let td2 = document.createElement("td");
-          let td3 = document.createElement("td");
-          let btn = document.createElement("button");
-          th.setAttribute("scope", "row");
-          th.appendChild(document.createTextNode(i+1));
-          tr.appendChild(th);
-          td.appendChild(document.createTextNode(expense[i].amount));
-          tr.appendChild(td);
-          td1.appendChild(document.createTextNode(expense[i].description));
-          tr.appendChild(td1);
-          td2.appendChild(document.createTextNode(expense[i].category));
-          tr.appendChild(td2);
-          btn.appendChild(document.createTextNode("Delete"));
-          btn.className ="btn btn-secondary p-0";
-          btn.setAttribute('id',expense[i].id);
-          td3.appendChild(btn);
-          tr.appendChild(td3);
-          tbody.appendChild(tr);
-        }
-        // li.className = "li";
-        // li.appendChild(
-        //   document.createTextNode(
-        //     expense.amount +
-        //       " " +
-        //       "-" +
-        //       " " +
-        //       expense.description +
-        //       " " +
-        //       "-" +
-        //       " " +
-        //       "On" +
-        //       " " +
-        //       expense.category +
-        //       " "
-        //   )
-        // );
-        // let del = document.createElement("button");
-        // let edit = document.createElement("button");
-        // del.className = "btn btn-secondary p-0 del";
-        // edit.className = "btn btn-secondary p-0 edit";
-        // del.appendChild(document.createTextNode("Delete Expense"));
-        // edit.appendChild(document.createTextNode("Edit Expense"));
-        // li.appendChild(del);
-        // li.appendChild(edit);
-        // ul.appendChild(li);
+        fetchExpenses(data);
       })
       .catch((err) => console.log(err));
   }
@@ -109,6 +59,13 @@ btn.addEventListener("click", (e) => {
 
 // });
 //fetch expense
+window.addEventListener('DOMContentLoaded', () => {
+  const token = localStorage.getItem('token');
+  axios.get('http://localhost:3000/', { headers: { 'Authorization': token } })
+    .then(response => {
+      fetchExpenses(response);
+    }).catch(err=>console.log(err));
+})
 // axios
 //   .get("http://localhost:3000")
 //   .then((data) => {
@@ -175,3 +132,31 @@ btn.addEventListener("click", (e) => {
 //   }
 // }
 //
+const fetchExpenses = (response) => {
+  let expense = response.data.expenses;
+  for (let i = 0; i < expense.length; i++) {
+    let tbody = document.querySelector(".tbody");
+    let tr = document.createElement("tr");
+    let th = document.createElement("th");
+    let td = document.createElement("td");
+    let td1 = document.createElement("td");
+    let td2 = document.createElement("td");
+    let td3 = document.createElement("td");
+    let btn = document.createElement("button");
+    th.setAttribute("scope", "row");
+    th.appendChild(document.createTextNode(i + 1));
+    tr.appendChild(th);
+    td.appendChild(document.createTextNode(expense[i].amount));
+    tr.appendChild(td);
+    td1.appendChild(document.createTextNode(expense[i].description));
+    tr.appendChild(td1);
+    td2.appendChild(document.createTextNode(expense[i].category));
+    tr.appendChild(td2);
+    btn.appendChild(document.createTextNode("Delete"));
+    btn.className = "btn btn-secondary p-0";
+    btn.setAttribute('id', expense[i].id);
+    td3.appendChild(btn);
+    tr.appendChild(td3);
+    tbody.appendChild(tr);
+  }
+}

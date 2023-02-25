@@ -1,10 +1,17 @@
 const Expense = require("../models/expenseModel");
+const jwt = require('jsonwebtoken');
+const User = require('../models/userModel');
+
+
 
 exports.addExpense = (req, res, next) => {
   const amount = req.body.amount;
   const description = req.body.description;
   const category = req.body.category;
+  const userId = req.user.id
+  console.log(userId);
   Expense.create({
+    userId,
     amount,
     description,
     category

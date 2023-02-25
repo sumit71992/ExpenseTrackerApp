@@ -53,6 +53,7 @@
                     let msg = user.data.message;
                     message.className = 'text-success text-center';
                     message.appendChild(document.createTextNode(msg));
+                    localStorage.setItem('token',user.data.token)
                     setTimeout(() => { window.location.replace("./expense.html") }, 2000);
                 }).catch(err => {
                     let msg = err.response.data.message;
