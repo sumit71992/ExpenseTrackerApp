@@ -16,7 +16,7 @@ btn.addEventListener("click", (e) => {
   };
   if (!desc.title) {
     axios
-      .post("http://localhost:3000/expense/addexpense", obj,{ headers: { 'Authorization': token } })
+      .post("http://localhost:3000/expense/addexpense", obj, { headers: { 'Authorization': token } })
       .then((data) => {
         location.reload();
       })
@@ -65,7 +65,7 @@ window.addEventListener('DOMContentLoaded', () => {
   axios.get('http://localhost:3000/expense/', { headers: { 'Authorization': token } })
     .then(response => {
       fetchExpenses(response);
-    }).catch(err=>console.log(err));
+    }).catch(err => console.log(err));
 })
 
 // //edit expense
@@ -88,6 +88,24 @@ window.addEventListener('DOMContentLoaded', () => {
 //
 const fetchExpenses = (response) => {
   let expense = response.data.expenses;
+  let premium = document.querySelector('.premium');
+
+
+  if (response.data.isPremium === true) {
+    let span = document.createElement('span');
+    let btn = document.createElement('button');
+    btn.className="btn leaderboard"
+    btn.appendChild(document.createTextNode("Leaderboard"))
+    premium.appendChild(btn);
+    span.appendChild(document.createTextNode("You are a Premium Member"))
+    premium.appendChild(span);
+    
+  } else {
+    let btn = document.createElement('button');
+    btn.className = "btn p-1";
+    btn.setAttribute('id', premium);
+    premium.appendChild(btn.appendChild(document.createTextNode("Buy Premium")))
+  }
   for (let i = 0; i < expense.length; i++) {
     let tr = document.createElement("tr");
     let th = document.createElement("th");
@@ -108,7 +126,7 @@ const fetchExpenses = (response) => {
     btn.appendChild(document.createTextNode("Delete"));
     btn.className = "btn btn-secondary p-0 del";
     btn.setAttribute('id', expense[i].id);
-    td3.classList="del"
+    td3.classList = "del"
     td3.appendChild(btn);
     tr.appendChild(td3);
     tbody.appendChild(tr);
@@ -119,7 +137,7 @@ const fetchExpenses = (response) => {
 tbody.addEventListener("click", (e) => {
   if (e.target.classList.contains("del")) {
     axios
-      .delete("http://localhost:3000/expense/" + e.target.id,{ headers: { 'Authorization': token } })
+      .delete("http://localhost:3000/expense/" + e.target.id, { headers: { 'Authorization': token } })
       .then((res) => {
         e.target.parentElement.parentElement.remove();
       })
@@ -127,35 +145,52 @@ tbody.addEventListener("click", (e) => {
   }
 });
 
+
+
 //buy premium
-document.getElementById('premium').onclick = async function (e){
+const premium = document.getElementById('premium');
+premium?
+premium.onclick = async function (e) {
 
-const response = await axios.get('http://localhost:3000/order/buypremium',{headers:{'Authorization':token}});
-console.log("response",response)
-var options ={
-  "key": response.data.key_id,
-  "order_id": response.data.order.id,
-  "handler": async function(response){
-    await axios.post('http://localhost:3000/order/updatestatus',{
-      order_id: options.order_id,
-      payment_id: response.razorpay_payment_id,
-    },{headers:{'Authorization': token}})
-    alert("You are a Premium member now")
+  const response = await axios.get('http://localhost:3000/order/buypremium', { headers: { 'Authorization': token } });
+  console.log("response", response)
+  var options = {
+    "key": response.data.key_id,
+    "order_id": response.data.order.id,
+    "handler": async function (response) {
+      await axios.post('http://localhost:3000/order/updatestatus', {
+        order_id: options.order_id,
+        payment_id: response.razorpay_payment_id,
+      }, { headers: { 'Authorization': token } })
+      alert("You are a Premium member now")
+      location.reload();
+    }
+  };
+  const rzp1 = new Razorpay(options);
+  rzp1.open();
+  e.preventDefault();
+
+
+  rzp1.on('payment.failed', function (response) {
+    console.log(response.error.reason, response.error.metadata.order_id)
+    axios.post('http://localhost:3000/order/updatestatus', {
+      order_id: response.error.metadata.order_id,
+      payment_id: response.error.metadata.payment_id,
+      reason: response.error.reason
+    }, { headers: { 'Authorization': token } })
+    alert('Something went Wrong')
+
+  });
+}:""
+//leaderboard
+const leaderboard = document.querySelector('.nav');
+leaderboard.addEventListener('click',(e)=>{
+  e.preventDefault();
+  if(e.target.classList.contains("leaderboard")){
+    axios.get('http://localhost:3000/expense/leaderboard',{headers:{'Authorization':token}})
+    .then(res=>{
+      console.log("res",res)
+    })
+    .catch(err=>console.log(err))
   }
-};
-const rzp1 = new Razorpay(options);
-rzp1.open();
-e.preventDefault();
-
-
-rzp1.on('payment.failed',function (response){
-  console.log(response.error.reason,response.error.metadata.order_id)
-       axios.post('http://localhost:3000/order/updatestatus',{
-        order_id: response.error.metadata.order_id,
-        payment_id: response.error.metadata.payment_id,
-        reason: response.error.reason
-      },{headers:{'Authorization': token}})
-      alert('Something went Wrong')
-  
-});
-}
+})

@@ -8,7 +8,8 @@ exports.addExpense = (req, res, next) => {
   const amount = req.body.amount;
   const description = req.body.description;
   const category = req.body.category;
-  const userId = req.user.id
+  const userId = req.user.id;
+  
   console.log(userId);
   Expense.create({
     userId,
@@ -25,9 +26,10 @@ exports.addExpense = (req, res, next) => {
     
 };
 exports.getAllExpenses = (req, res, next) => {
+  const isPremium = req.user.isPremium;
   Expense.findAll({where:{userId:req.user.id}})
     .then((expenses) => {
-      return res.json({expenses})
+      return res.json({expenses, isPremium});
       })
     .catch((err) => console.log(err));
 };
@@ -69,4 +71,9 @@ exports.updateExpense = (req, res, next) => {
     
   })
   .catch(err=>console.log(err));
+};
+
+exports.getLeaderboard = (req,res)=>{
+  const all = Expense.findAll();
+  return res.json(all)
 };
