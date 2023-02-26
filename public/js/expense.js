@@ -1,4 +1,4 @@
-const Razorpay = require("razorpay");
+// const Razorpay = import("razorpay");
 
 let amount = document.querySelector("#expense_input");
 let desc = document.getElementById("description_input");
@@ -129,12 +129,14 @@ tbody.addEventListener("click", (e) => {
 
 //buy premium
 document.getElementById('premium').onclick = async function (e){
-const response = await axios.get('https://localhost:3000/order/buypremium',{headers:{'Authorization':token}});
+
+const response = await axios.get('http://localhost:3000/order/buypremium',{headers:{'Authorization':token}});
+console.log("response",response)
 var options ={
   "key": response.data.key_id,
   "order_id": response.data.order.id,
   "handler": async function(response){
-    await axios.post('https://localhost:3000/order/updatestatus',{
+    await axios.post('http://localhost:3000/order/updatestatus',{
       order_id: options.order_id,
       payment_id: response.razorpay_payment_id,
     },{headers:{'Authorization': token}})
@@ -144,6 +146,7 @@ var options ={
 const rzp1 = new Razorpay(options);
 rzp1.open();
 e.preventDefault();
+
 
 rzp1.on('payment.failed',function (response){
   alert('Something went Wrong')
