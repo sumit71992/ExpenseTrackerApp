@@ -149,6 +149,13 @@ e.preventDefault();
 
 
 rzp1.on('payment.failed',function (response){
-  alert('Something went Wrong')
+  console.log(response.error.reason,response.error.metadata.order_id)
+       axios.post('http://localhost:3000/order/updatestatus',{
+        order_id: response.error.metadata.order_id,
+        payment_id: response.error.metadata.payment_id,
+        reason: response.error.reason
+      },{headers:{'Authorization': token}})
+      alert('Something went Wrong')
+  
 });
 }
