@@ -5,12 +5,11 @@ const router = express.Router();
 
 // Expense => GET
 router.get('/', userAuthentication.authenticate, expenseController.getAllExpenses);
-router.get('/:id', expenseController.getEditExpense);
 router.get('/leaderboard', userAuthentication.authenticate,expenseController.getLeaderboard);
+router.get('/:id', expenseController.getEditExpense);
+
 
 // Expense => POST
-
-
 router.post('/addexpense',userAuthentication.authenticate, expenseController.addExpense, expenseController.getAllExpenses);
 
 

@@ -73,12 +73,19 @@ exports.updateExpense = (req, res, next) => {
   .catch(err=>console.log(err));
 };
 
-exports.getLeaderboard = (req,res)=>{
-  const person = User.findAll();
+exports.getLeaderboard = async (req,res)=>{
+  const arr=[];
+  let amounts=0
+  const person = await User.findAll();
   for(let i=0;i<person.length;i++){
-    const all = Expense.findAll({where:{userId:person[i].id}});
-    
+    const all = await Expense.findAll({where:{userId:person[i].id}});
+    for(let j=0;j<all.length;j++){
+      if(person[i].id===all[j].userId){
+        amounts+=all[j].amount;
+      }
+    }
+    arr.push({name:person[i].name, total:amounts})
+    amounts=0;
   }
-  
-  return res.json(all)
+  return res.json({result:arr})
 };
