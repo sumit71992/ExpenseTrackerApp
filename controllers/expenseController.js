@@ -74,6 +74,11 @@ exports.updateExpense = (req, res, next) => {
 };
 
 exports.getLeaderboard = (req,res)=>{
-  const all = Expense.findAll();
+  const person = User.findAll();
+  for(let i=0;i<person.length;i++){
+    const all = Expense.findAll({where:{userId:person[i].id}});
+    
+  }
+  
   return res.json(all)
 };
