@@ -13,7 +13,7 @@ const signup = (req, res, next) => {
             User.create({
               name,
               email,
-              password: hashedPwd,
+              password: hashedPwd
             })
               .then((user) => {
                 return res.json("sign up successfully");

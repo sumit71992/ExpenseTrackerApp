@@ -3,25 +3,23 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 const sequelize = require("../util/database");
 
-exports.addExpense = (req, res, next) => {
-  const amount = req.body.amount;
-  const description = req.body.description;
-  const category = req.body.category;
-  const userId = req.user.id;
-
-  console.log(userId);
-  Expense.create({
-    userId,
-    amount,
-    description,
-    category,
-  })
-    .then((result) => {
-      console.log("Created Product");
-      next();
-      // return res.json({result});
-    })
-    .catch((err) => console.log(err));
+exports.addExpense = async (req, res, next) => {
+  try {
+    const { amount, description, category } = req.body;
+    const userId = req.user.id;
+    const expense = await Expense.create({
+      userId,
+      amount,
+      description,
+      category,
+    });
+    const user = await User.findByPk(userId);
+    user.totalExpenses += Number(amount)
+    await user.save();
+    next();
+  } catch (err) {
+    console.log(err);
+  }
 };
 exports.getAllExpenses = (req, res, next) => {
   const isPremium = req.user.isPremium;
@@ -70,17 +68,11 @@ exports.updateExpense = (req, res, next) => {
     })
     .catch((err) => console.log(err));
 };
-
 exports.getLeaderboard = async (req, res) => {
   try {
     const userLeaderboard = await User.findAll({
-      attributes: ["id", "name",[sequelize.fn("sum", sequelize.col("expenses.amount")), "totalCost"]],
-      include:[{
-        model:Expense,
-        attributes:[]
-      }],
-      group:['user.id'],
-      order:[['totalCost',"DESC"]]
+      attributes: ["name","totalExpenses"],
+      order: [['totalExpenses', "DESC"]]
     });
     return res.json({ userLeaderboard });
   } catch (err) {

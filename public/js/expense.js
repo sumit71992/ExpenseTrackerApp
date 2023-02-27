@@ -243,7 +243,7 @@ leaderboard.addEventListener("click", (e) => {
           tr.appendChild(th);
           td.appendChild(document.createTextNode(data[i].name));
           tr.appendChild(td);
-          td1.appendChild(document.createTextNode(data[i].totalCost||0));
+          td1.appendChild(document.createTextNode(data[i].totalExpenses||0));
           tr.appendChild(td1);
           tbody.appendChild(tr);
         }
