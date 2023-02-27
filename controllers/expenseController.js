@@ -76,15 +76,19 @@ exports.updateExpense = (req, res, next) => {
 exports.getLeaderboard = async (req,res)=>{
   const arr=[];
   let amounts=0
-  const person = await User.findAll();
-  for(let i=0;i<person.length;i++){
-    const all = await Expense.findAll({where:{userId:person[i].id}});
-    for(let j=0;j<all.length;j++){
-      if(person[i].id===all[j].userId){
-        amounts+=all[j].amount;
+  const person = await User.findAll({
+    attributes:['id','name']
+  });
+  for(let i of person){
+    const all = await Expense.findAll({
+      attributes:['amount','userId']
+    },{where:{userId:i.id}});
+    for(let j  of all){
+      if(i.id===j.userId){
+        amounts+=j.amount;
       }
     }
-    arr.push({name:person[i].name, total:amounts})
+    arr.push({name:i.name, total:amounts})
     amounts=0;
   }
   return res.json({result:arr})
