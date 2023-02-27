@@ -30,17 +30,18 @@ exports.getAllExpenses = (req, res, next) => {
     .catch((err) => console.log(err));
 };
 
-exports.deleteExpense = (req, res, next) => {
-  const id = req.params.id;
-  Expense.findByPk(id, { where: { userId: req.user.id } })
-    .then((expense) => {
-      return expense.destroy();
-    })
-    .then((result) => {
-      console.log("Deleted");
-      return res.json({ result });
-    })
-    .catch((err) => console.log(err));
+exports.deleteExpense = async (req, res, next) => {
+  try{
+    const id = req.params.id;
+    const expense = await Expense.findByPk(id, { where: { userId: req.user.id } });
+    const usr = await User.findByPk(req.user.id);
+    usr.totalExpenses -= expense.amount;
+    await usr.save();
+    await expense.destroy();
+    next();
+  }catch(err){
+    console.log(err);
+  }
 };
 exports.getEditExpense = (req, res, next) => {
   const id = req.params.id;

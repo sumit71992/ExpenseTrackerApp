@@ -207,7 +207,6 @@ leaderboard.addEventListener("click", (e) => {
       .then((res) => {
         console.log(res)
         let data = res.data.userLeaderboard;
-        data.sort((a, b) => b.totalCost||0 - a.totalCost||0);
         const ldata = document.querySelector(".ldata");
         ldata.className = "mt-5 p-3 border-top border-secondary";
         const table = document.querySelector(".leaderboard-table");
