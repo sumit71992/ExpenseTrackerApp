@@ -205,8 +205,9 @@ leaderboard.addEventListener("click", (e) => {
         headers: { Authorization: token },
       })
       .then((res) => {
-        let data = res.data.result;
-        data.sort((a, b) => b.total - a.total);
+        console.log(res)
+        let data = res.data.userLeaderboard;
+        data.sort((a, b) => b.totalCost||0 - a.totalCost||0);
         const ldata = document.querySelector(".ldata");
         ldata.className = "mt-5 p-3 border-top border-secondary";
         const table = document.querySelector(".leaderboard-table");
@@ -242,7 +243,7 @@ leaderboard.addEventListener("click", (e) => {
           tr.appendChild(th);
           td.appendChild(document.createTextNode(data[i].name));
           tr.appendChild(td);
-          td1.appendChild(document.createTextNode(data[i].total));
+          td1.appendChild(document.createTextNode(data[i].totalCost||0));
           tr.appendChild(td1);
           tbody.appendChild(tr);
         }
