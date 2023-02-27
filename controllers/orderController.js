@@ -1,6 +1,7 @@
 const Razorpay = require('razorpay');
 const Order = require('../models/orderModel');
 require('dotenv').config();
+const sequelize = require('../util/database');
 
 const premium = async (req, res) => {
     try {
@@ -23,22 +24,26 @@ const premium = async (req, res) => {
     }
 }
 const updateStatus = async (req, res) => {
+    const t = await sequelize.transaction();
     try {
         const { payment_id, order_id } = req.body;
         const reason = req.body.reason
         if (reason == "payment_failed") {
-            const order = await Order.findOne({ where: { orderId: order_id } });
-            await order.update({ paymentId: payment_id, status: "FAILED" });
+            const order = await Order.findOne({ where: { orderId: order_id }, transaction:t });
+            await order.update({ paymentId: payment_id, status: "FAILED" },{transaction:t});
+            await t.commit();
             console.log("failed payment")
             return res.status(202).json({ message: "Transaction Failed" });
         }
 
-        const order = await Order.findOne({ where: { orderId: order_id } });
-        await order.update({ paymentId: payment_id, status: "SUCCESSFUL" });
-        await req.user.update({ isPremium: true });
+        const order = await Order.findOne({ where: { orderId: order_id }, transaction:t });
+        await order.update({ paymentId: payment_id, status: "SUCCESSFUL" },{transaction:t});
+        await req.user.update({ isPremium: true },{transaction:t});
+        await t.commit();
         return res.status(202).json({ message: "Transaction Successful" });
 
     } catch (err) {
+        await t.rollback();
         console.log("err", err);
         return res.status(403).json({ error: err, message: "Something went wrong" });
     }

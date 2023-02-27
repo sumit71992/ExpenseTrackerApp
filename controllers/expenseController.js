@@ -3,76 +3,87 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 const sequelize = require("../util/database");
 
+
 exports.addExpense = async (req, res, next) => {
+  const t = await sequelize.transaction();
   try {
     const { amount, description, category } = req.body;
     const userId = req.user.id;
-    const expense = await Expense.create({
+    await Expense.create({
       userId,
       amount,
       description,
       category,
-    });
-    const user = await User.findByPk(userId);
-    user.totalExpenses += Number(amount)
-    await user.save();
+    }, { transaction: t });
+    const totalExpense = req.user.totalExpenses + Number(amount);
+    await User.update({
+      totalExpenses: totalExpense
+    }, { where: { id: userId }, transaction: t });
+    await t.commit();
     next();
+  } catch (err) {
+    await t.rollback();
+    console.log(err);
+  }
+};
+exports.getAllExpenses = async (req, res, next) => {
+  try{
+    const isPremium = req.user.isPremium;
+    const expenses = await Expense.findAll({ where: { userId: req.user.id } });
+    return res.json({ expenses, isPremium });
+  }catch(err){
+    console.log(err)
+  }
+};
+
+exports.deleteExpense = async (req, res, next) => {
+  const t = await sequelize.transaction();
+  try {
+    const id = req.params.id;
+    const expense = await Expense.findByPk(id, { where: { userId: req.user.id }, transaction: t });
+    const usr = await User.findByPk(req.user.id, { transaction: t });
+    usr.totalExpenses -= expense.amount;
+    await t.commit();
+    await usr.save();
+    await expense.destroy();
+    next();
+  } catch (err) {
+    await t.rollback();
+    console.log(err);
+  }
+};
+exports.getEditExpense = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    const expense = await Expense.findByPk(id);
+    return res.json({ expense });
   } catch (err) {
     console.log(err);
   }
 };
-exports.getAllExpenses = (req, res, next) => {
-  const isPremium = req.user.isPremium;
-  Expense.findAll({ where: { userId: req.user.id } })
-    .then((expenses) => {
-      return res.json({ expenses, isPremium });
-    })
-    .catch((err) => console.log(err));
-};
-
-exports.deleteExpense = async (req, res, next) => {
-  try{
+exports.updateExpense = async (req, res, next) => {
+  const t = await sequelize.transaction();
+  try {
     const id = req.params.id;
-    const expense = await Expense.findByPk(id, { where: { userId: req.user.id } });
-    const usr = await User.findByPk(req.user.id);
-    usr.totalExpenses -= expense.amount;
-    await usr.save();
-    await expense.destroy();
-    next();
-  }catch(err){
+    const amount = req.body.amount;
+    const description = req.body.description;
+    const category = req.body.category;
+    const expense = await Expense.findByPk(id,{transaction:t});
+    expense.amount = amount;
+    expense.description = description;
+    expense.category = category;
+    await t.commit();
+    await expense.save();
+    return res.json({ expense });
+  } catch (err) {
+    await t.rollback();
     console.log(err);
   }
-};
-exports.getEditExpense = (req, res, next) => {
-  const id = req.params.id;
-  Expense.findByPk(id)
-    .then((expense) => {
-      return res.json({ expense });
-    })
-    .catch((err) => console.log(err));
-};
-exports.updateExpense = (req, res, next) => {
-  const id = req.params.id;
-  const amount = req.body.amount;
-  const description = req.body.description;
-  const category = req.body.category;
-  Expense.findByPk(id)
-    .then((expense) => {
-      expense.amount = amount;
-      expense.description = description;
-      expense.category = category;
-      return expense.save();
-    })
-    .then((result) => {
-      console.log("Updated");
-      return res.json({ result });
-    })
-    .catch((err) => console.log(err));
 };
 exports.getLeaderboard = async (req, res) => {
   try {
     const userLeaderboard = await User.findAll({
-      attributes: ["name","totalExpenses"],
+      attributes: ["name", "totalExpenses"],
       order: [['totalExpenses', "DESC"]]
     });
     return res.json({ userLeaderboard });
