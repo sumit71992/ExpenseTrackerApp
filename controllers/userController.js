@@ -47,11 +47,14 @@ const signin = async (req, res, next) => {
   catch (err) {
     return res.status(500).json({ message: err });
   }
+};
 
-
-
+const forgotPassword = async (req,res,next)=>{
+  const email = req.body.email;
+  
 };
 module.exports = {
   signup,
   signin,
+  forgotPassword,
 };
