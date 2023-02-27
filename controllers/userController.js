@@ -1,7 +1,11 @@
 const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
-const sequelize = require('../util/database')
+const sequelize = require('../util/database');
+const Sib = require('sib-api-v3-sdk');
+require('dotenv').config();
+
+
 
 const signup = async (req, res, next) => {
   const t = await sequelize.transaction();
@@ -51,7 +55,28 @@ const signin = async (req, res, next) => {
 
 const forgotPassword = async (req,res,next)=>{
   const email = req.body.email;
-  
+  const client = Sib.ApiClient.instance;
+  var apiKey = client.authentications['api-key'];
+  apiKey.apiKey = process.env.EMAIL_API_KEY;
+
+  const tranEmailApi = new Sib.TransactionalEmailsApi()
+const sender = {
+    email: 'thatanjan@gmail.com',
+    name: 'Anjan',
+}
+const receivers = [
+    {
+        email: email,
+    },
+]
+  tranEmailApi.sendTransacEmail({
+    sender,
+    to: receivers,
+    subject: 'Reset password Link',
+    textContent: `Click to Reset Password`
+  }).then(data=>console.log(data))
+  .catch(err=>console.log(err))
+
 };
 module.exports = {
   signup,
