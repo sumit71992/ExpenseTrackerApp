@@ -28,7 +28,8 @@
                     <input class="w-100" id="password" type="password" name="password" value="">
                 </div>
                 <div class="text-center">
-                    <button id="forgot" type="submit" class="btn text-primary"><a class="text-decoration-none" href="/views/forgot.html">Forgot Password</a></button>
+                    <button id="forgot" type="submit" class="btn text-primary"><a class="text-decoration-none"
+                            href="/views/forgot.html">Forgot Password</a></button>
                 </div>
                 <div class="p-2 text-center">
                     <button id="signin" type="submit" class="btn btn-success">Signin</button>
@@ -46,32 +47,32 @@
         const email = document.getElementById("email");
         let message = document.querySelector(".message");
         const password = document.getElementById("password");
-        signin.addEventListener('click', (e) => {
-            e.preventDefault();
-            const obj = {
-                email: email.value,
-                password: password.value
-            };
-            axios.post('http://localhost:3000/user/signin', obj)
-                .then(user => {
-                    let msg = user.data.message;
-                    message.className = 'text-success text-center';
-                    message.appendChild(document.createTextNode(msg));
-                    localStorage.setItem('token',user.data.token)
-                    setTimeout(() => { window.location.replace("./expense.html") }, 2000);
-                }).catch(err => {
-                    let msg = err.response.data.message;
-                    message.appendChild(document.createTextNode(msg));
-                    setTimeout(() => { window.location.reload() }, 3000);
-                });
+        signin.addEventListener('click', async (e) => {
+            try {
+                e.preventDefault();
+                const obj = {
+                    email: email.value,
+                    password: password.value
+                };
+                const user = await axios.post('http://localhost:3000/user/signin', obj);
+                let msg = user.data.message;
+                message.className = 'text-success text-center';
+                message.appendChild(document.createTextNode(msg));
+                await localStorage.setItem('token', user.data.token)
+                setTimeout(() => { window.location.replace("./expense.html") }, 2000);
+            } catch (err) {
+                let msg = err.response.data.message;
+                message.appendChild(document.createTextNode(msg));
+                setTimeout(() => { window.location.reload() }, 3000);
+            }
         });
 
         //onload
-        window.addEventListener('DOMContentLoaded', async ()=>{
-          const token =  await localStorage.getItem('token');
-          if(token){
-            await location.replace('./expense.html');
-          }
+        window.addEventListener('DOMContentLoaded', async () => {
+            const token = await localStorage.getItem('token');
+            if (token) {
+                await location.replace('./expense.html');
+            }
         });
     </script>
 </body>

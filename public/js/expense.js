@@ -7,22 +7,22 @@ let btn = document.getElementById("add");
 const token = localStorage.getItem("token");
 let tbody = document.querySelector(".tbody");
 //Add Expense
-btn.addEventListener("click", (e) => {
-  e.preventDefault();
-  let obj = {
-    amount: amount.value,
-    description: desc.value,
-    category: cat.value,
-  };
-  if (!desc.title) {
-    axios
-      .post("http://localhost:3000/expense/addexpense", obj, {
+btn.addEventListener("click", async (e) => {
+  try {
+    e.preventDefault();
+    let obj = {
+      amount: amount.value,
+      description: desc.value,
+      category: cat.value,
+    };
+    if (!desc.title) {
+      const expense = await axios.post("http://localhost:3000/expense/addexpense", obj, {
         headers: { Authorization: token },
-      })
-      .then((data) => {
-        location.reload();
-      })
-      .catch((err) => console.log(err));
+      });
+      await location.reload();
+    }
+  } catch (err) {
+    console.log(err);
   }
 });
 // else{
@@ -64,15 +64,19 @@ btn.addEventListener("click", (e) => {
 // });
 //fetch expense
 window.addEventListener("DOMContentLoaded", async () => {
-  const token = localStorage.getItem('token')
-  if(token){
-    const response = await axios
-    .get("http://localhost:3000/expense/", {
-      headers: { Authorization: token },
-    });
+  try {
+    const token = localStorage.getItem('token')
+    if (token) {
+      const response = await axios
+        .get("http://localhost:3000/expense/", {
+          headers: { Authorization: token },
+        });
       fetchExpenses(response);
-  }else{
-    location.replace('./signin.html');
+    } else {
+      location.replace('./signin.html');
+    }
+  } catch (err) {
+    console.log(err);
   }
 });
 
@@ -100,7 +104,7 @@ const fetchExpenses = (response) => {
   let logout = document.createElement("button");
   logout.className = "btn leaderboard text-white logout";
   logout.appendChild(document.createTextNode("Logout"));
-  
+
   if (response.data.isPremium === true) {
     let span = document.createElement("span");
     let btn = document.createElement("button");
@@ -144,16 +148,18 @@ const fetchExpenses = (response) => {
 };
 
 //Delete Expense
-tbody.addEventListener("click", (e) => {
-  if (e.target.classList.contains("del")) {
-    axios
-      .delete("http://localhost:3000/expense/" + e.target.id, {
-        headers: { Authorization: token },
-      })
-      .then((res) => {
-        e.target.parentElement.parentElement.remove();
-      })
-      .catch((err) => console.log(err));
+tbody.addEventListener("click", async (e) => {
+  try {
+    if (e.target.classList.contains("del")) {
+      const deletedExpense = await axios
+        .delete("http://localhost:3000/expense/" + e.target.id, {
+          headers: { Authorization: token },
+        });
+      await e.target.parentElement.parentElement.remove();
+      await location.reload();
+    }
+  } catch (err) {
+    console.log(err);
   }
 });
 
@@ -248,7 +254,7 @@ leaderboard.addEventListener("click", (e) => {
           tr.appendChild(th);
           td.appendChild(document.createTextNode(data[i].name));
           tr.appendChild(td);
-          td1.appendChild(document.createTextNode(data[i].totalExpenses||0));
+          td1.appendChild(document.createTextNode(data[i].totalExpenses || 0));
           tr.appendChild(td1);
           tbody.appendChild(tr);
         }

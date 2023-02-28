@@ -48,31 +48,27 @@
         let message = document.querySelector(".message");
         const password = document.getElementById("password");
 
-        signup.addEventListener("click", (e) => {
+        signup.addEventListener("click", async (e) => {
             e.preventDefault();
             const obj = {
                 name: names.value,
                 email: email.value,
                 password: password.value,
             };
-            axios
-                .post("http://localhost:3000/user/signup", obj)
-                .then((user) => {
-                    if (user.data.message) {
-                        message.appendChild(document.createTextNode(user.data.message));
-                    } else {
-                        window.location.replace("./signin.html");
-                    }
-                })
-                .catch((err) => console.log(err));
+            const user = await axios.post("http://localhost:3000/user/signup", obj);
+            if (user.data.message) {
+                message.appendChild(document.createTextNode(user.data.message));
+            } else {
+                window.location.replace("./signin.html");
+            }
         });
 
         //onload
-        window.addEventListener('DOMContentLoaded', async ()=>{
-          const token =  await localStorage.getItem('token');
-          if(token){
-            await location.replace('./expense.html');
-          }
+        window.addEventListener('DOMContentLoaded', async () => {
+            const token = await localStorage.getItem('token');
+            if (token) {
+                await location.replace('./expense.html');
+            }
         });
 
     </script>
