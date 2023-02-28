@@ -63,15 +63,17 @@ btn.addEventListener("click", (e) => {
 
 // });
 //fetch expense
-window.addEventListener("DOMContentLoaded", () => {
-  axios
+window.addEventListener("DOMContentLoaded", async () => {
+  const token = localStorage.getItem('token')
+  if(token){
+    const response = await axios
     .get("http://localhost:3000/expense/", {
       headers: { Authorization: token },
-    })
-    .then((response) => {
+    });
       fetchExpenses(response);
-    })
-    .catch((err) => console.log(err));
+  }else{
+    location.replace('./signin.html');
+  }
 });
 
 // //edit expense
@@ -95,7 +97,10 @@ window.addEventListener("DOMContentLoaded", () => {
 const fetchExpenses = (response) => {
   let expense = response.data.expenses;
   let premium = document.querySelector(".premium");
-
+  let logout = document.createElement("button");
+  logout.className = "btn leaderboard text-white logout";
+  logout.appendChild(document.createTextNode("Logout"));
+  
   if (response.data.isPremium === true) {
     let span = document.createElement("span");
     let btn = document.createElement("button");
@@ -110,6 +115,7 @@ const fetchExpenses = (response) => {
     btn.appendChild(document.createTextNode("Buy Premium"));
     premium.appendChild(btn);
   }
+  premium.appendChild(logout);
   for (let i = 0; i < expense.length; i++) {
     let tr = document.createElement("tr");
     let th = document.createElement("th");
@@ -248,5 +254,14 @@ leaderboard.addEventListener("click", (e) => {
         }
       })
       .catch((err) => console.log(err));
+  }
+});
+//Logout
+const signout = document.querySelector(".nav");
+signout.addEventListener("click", async (e) => {
+  e.preventDefault();
+  if (e.target.classList.contains("logout")) {
+    await localStorage.removeItem('token');
+    await location.replace('./signin.html');
   }
 });
