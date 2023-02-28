@@ -110,27 +110,64 @@ const forgotPassword = async (req, res, next) => {
 };
 const resetPassword = async (req, res) => {
   const t = await sequelize.transaction();
-  try{
+  try {
     const uuid = req.params.id;
-    const reset = await Forgot.findByPk(uuid,{transaction:t});
-    if(reset.isActive===true){
-      await Forgot.update({
-        isActive:false
-      },{where:{id:uuid},transaction:t})
+    const reset = await Forgot.findByPk(uuid, { transaction: t });
+    if (reset.isActive === true || reset.isActive === false) {
+      await Forgot.update(
+        {
+          isActive: false,
+        },
+        { where: { id: uuid }, transaction: t }
+      );
       await t.commit();
-      return res.json({message:"Success"})
-    }else{
-      return res.json({message:"Link Expired"});
-    } 
-  }catch(err){
+      res.status(200).send(`<html>
+                                    <script>
+                                        function formsubmitted(e){
+                                            e.preventDefault();
+                                            console.log('called')
+                                        }
+                                    </script>
+                                    <form action="/password/updatepassword/${uuid}" method="post">
+                                        <label for="newpassword">Enter New password</label>
+                                        <input id="newpassword" name="newpassword" type="password" required></input>
+                                        <button>reset password</button>
+                                    </form>
+                                </html>`);
+     
+      res.end();
+      // return res.json({ message: "Success" });
+    } else {
+      return res.json({ message: "Link Expired" });
+    }
+  } catch (err) {
+    console.log(err);
     await t.rollback();
     console.log(err);
-    return res.json(err)
+    return res.json(err);
   }
 };
+const updatepassword = async (req,res)=>{
+  console.log(">>>>.",req.params.id)
+  // const t = await sequelize.transaction();
+  // try{
+  //   const id = req.params.id;
+  //   const pwd = req.query.newpassword;
+  //   const userid = await Forgot.findByPk(id,{transaction:t});
+  //   await User.update({
+  //     password:pwd
+  //   },{where:{id:userid.userId},transaction:t});
+  //   await t.commit();
+  // }catch(err){
+  //   await t.rollback();
+  //   console.log(err);
+  // }
+  
+}
 module.exports = {
   signup,
   signin,
   forgotPassword,
   resetPassword,
+  updatepassword,
 };
