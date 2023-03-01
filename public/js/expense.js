@@ -310,25 +310,6 @@ leaderboard.addEventListener("click", async (e) => {
       theadDay.appendChild(trDay);
       dayTable.appendChild(theadDay);
 
-      let tr = document.createElement("tr");
-      let th = document.createElement("th");
-      let td = document.createElement("td");
-      let td1 = document.createElement("td");
-      let td2 = document.createElement("td");
-      let td3 = document.createElement("td");
-      th.setAttribute("scope", "row");
-      th.appendChild(document.createTextNode("01-01-2023"));
-      tr.appendChild(th);
-      td.appendChild(document.createTextNode("Milk"));
-      tr.appendChild(td);
-      td1.appendChild(document.createTextNode("Grocerry"));
-      tr.appendChild(td1);
-      td2.appendChild(document.createTextNode("60"));
-      tr.appendChild(td2);
-      td3.appendChild(document.createTextNode("0"));
-      tr.appendChild(td3);
-      tbodyDay.appendChild(tr);
-
 
       dayTable.appendChild(tbodyDay);
       div.appendChild(dayTable);
@@ -371,13 +352,13 @@ leaderboard.addEventListener("click", async (e) => {
       th1.appendChild(document.createTextNode("Total"));
       tr1.appendChild(th1);
       td4.appendChild(document.createTextNode(60));
-      td4.className="text-success"
+      td4.className = "text-success"
       tr1.appendChild(td4);
       td5.appendChild(document.createTextNode(40));
-      td5.className="text-danger"
+      td5.className = "text-danger"
       tr1.appendChild(td5);
       td6.appendChild(document.createTextNode(20));
-      td6.className="text-success";
+      td6.className = "text-success";
       tr1.appendChild(td6);
       tbodyYearly.appendChild(tr1);
 
@@ -412,7 +393,7 @@ leaderboard.addEventListener("click", async (e) => {
       th2.appendChild(document.createTextNode("Total"));
       tr2.appendChild(th2);
       td7.appendChild(document.createTextNode(60));
-      td7.className="text-success"
+      td7.className = "text-success"
       tr2.appendChild(td7);
       tbodyNotes.appendChild(tr2);
 
@@ -420,10 +401,43 @@ leaderboard.addEventListener("click", async (e) => {
       notesTable.appendChild(tbodyNotes)
       div.appendChild(notesTable);
 
-const token = localStorage.getItem('token');
-      const data = await axios.get('http://localhost:3000/user/reports',{headers:{'Authorization':token}});
+      const token = localStorage.getItem('token');
+      const data = await axios.get('http://localhost:3000/user/reports', { headers: { 'Authorization': token } });
       const report = data.data.report;
+      let date = new Date();
+      let currDay = date.getDate();
+      let currMonth = date.getMonth() + 1;
+      let currYear = date.getFullYear();
       console.log(report);
+      for (let i of report) {
+        let str = i.updatedAt.split("T");
+        let time = str[0].split("-");
+        let year = time[0];
+        let month = time[1];
+        let day = time[2];
+        //day expense
+        // if(time){
+
+        // }
+        let tr = document.createElement("tr");
+        let th = document.createElement("th");
+        let td = document.createElement("td");
+        let td1 = document.createElement("td");
+        let td2 = document.createElement("td");
+        let td3 = document.createElement("td");
+        th.setAttribute("scope", "row");
+        th.appendChild(document.createTextNode("01-01-2023"));
+        tr.appendChild(th);
+        td.appendChild(document.createTextNode("Milk"));
+        tr.appendChild(td);
+        td1.appendChild(document.createTextNode("Grocerry"));
+        tr.appendChild(td1);
+        td2.appendChild(document.createTextNode("60"));
+        tr.appendChild(td2);
+        td3.appendChild(document.createTextNode("0"));
+        tr.appendChild(td3);
+        tbodyDay.appendChild(tr);
+      }
     }
   } catch (err) {
     console.log(err)
