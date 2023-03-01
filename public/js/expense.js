@@ -107,10 +107,11 @@ const fetchExpenses = (response) => {
 
   if (response.data.isPremium === true) {
     let span = document.createElement("span");
-    let report = document.createElement("button");
+    let report = document.createElement("a");
+    report.setAttribute('href', "./report.html");
     report.className = "btn report text-white";
     report.appendChild(document.createTextNode("Report"));
-    premium.appendChild(btn);
+    premium.appendChild(report);
     let btn = document.createElement("button");
     btn.className = "btn leaderboard text-white";
     btn.appendChild(document.createTextNode("Leaderboard"));
@@ -264,6 +265,168 @@ leaderboard.addEventListener("click", (e) => {
         }
       })
       .catch((err) => console.log(err));
+  }
+});
+//report
+const expenseTable = document.querySelector('.tableExpense');
+leaderboard.addEventListener("click", async (e) => {
+  try {
+    if (e.target.classList.contains("report")) {
+      expenseTable.style.display = 'none';
+      const div = document.querySelector('.report-table');
+      //Daily table
+      const dayTable = document.createElement('table');
+      dayTable.className = "table table-hover text-secondary";
+      const theadDay = document.createElement("thead");
+      const trDay = document.createElement("tr");
+      trDay.className = "bg-success text-white";
+      const tbodyDay = document.createElement('tbody');
+
+
+      const dat = document.createElement("th");
+      dat.setAttribute('scope', 'col');
+      dat.appendChild(document.createTextNode("Date"));
+      trDay.appendChild(dat);
+
+      const description = document.createElement("th");
+      description.setAttribute('scope', 'col');
+      description.appendChild(document.createTextNode("Description"));
+      trDay.appendChild(description);
+
+      const category = document.createElement("th");
+      category.setAttribute('scope', 'col');
+      category.appendChild(document.createTextNode("Category"));
+      trDay.appendChild(category);
+
+      const expense = document.createElement("th");
+      expense.setAttribute('scope', 'col');
+      expense.appendChild(document.createTextNode("expense"));
+      trDay.appendChild(expense);
+
+      const income = document.createElement("th");
+      income.setAttribute('scope', 'col');
+      income.appendChild(document.createTextNode("Income"));
+      trDay.appendChild(income);
+      theadDay.appendChild(trDay);
+      dayTable.appendChild(theadDay);
+
+      let tr = document.createElement("tr");
+      let th = document.createElement("th");
+      let td = document.createElement("td");
+      let td1 = document.createElement("td");
+      let td2 = document.createElement("td");
+      let td3 = document.createElement("td");
+      th.setAttribute("scope", "row");
+      th.appendChild(document.createTextNode("01-01-2023"));
+      tr.appendChild(th);
+      td.appendChild(document.createTextNode("Milk"));
+      tr.appendChild(td);
+      td1.appendChild(document.createTextNode("Grocerry"));
+      tr.appendChild(td1);
+      td2.appendChild(document.createTextNode("60"));
+      tr.appendChild(td2);
+      td3.appendChild(document.createTextNode("0"));
+      tr.appendChild(td3);
+      tbodyDay.appendChild(tr);
+
+
+      dayTable.appendChild(tbodyDay);
+      div.appendChild(dayTable);
+      //Yearly Table
+      const yearlyTable = document.createElement('table');
+      yearlyTable.className = "table table-hover text-secondary";
+      const theadYearly = document.createElement("thead");
+      const trYearly = document.createElement("tr");
+      trYearly.className = "bg-success text-white";
+      const tbodyYearly = document.createElement('tbody');
+
+
+      const month = document.createElement("th");
+      month.setAttribute('scope', 'col');
+      month.appendChild(document.createTextNode("Month"));
+      trYearly.appendChild(month);
+
+      const inc = document.createElement("th");
+      inc.setAttribute('scope', 'col');
+      inc.appendChild(document.createTextNode("Income"));
+      trYearly.appendChild(inc);
+
+      const exp = document.createElement("th");
+      exp.setAttribute('scope', 'col');
+      exp.appendChild(document.createTextNode("Expense"));
+      trYearly.appendChild(exp);
+
+      const savings = document.createElement("th");
+      savings.setAttribute('scope', 'col');
+      savings.appendChild(document.createTextNode("Savings"));
+      trYearly.appendChild(savings);
+      theadYearly.appendChild(trYearly);
+
+      let tr1 = document.createElement("tr");
+      let th1 = document.createElement("th");
+      let td4 = document.createElement("td");
+      let td5 = document.createElement("td");
+      let td6 = document.createElement("td");
+      th1.setAttribute("scope", "row");
+      th1.appendChild(document.createTextNode("Total"));
+      tr1.appendChild(th1);
+      td4.appendChild(document.createTextNode(60));
+      td4.className="text-success"
+      tr1.appendChild(td4);
+      td5.appendChild(document.createTextNode(40));
+      td5.className="text-danger"
+      tr1.appendChild(td5);
+      td6.appendChild(document.createTextNode(20));
+      td6.className="text-success";
+      tr1.appendChild(td6);
+      tbodyYearly.appendChild(tr1);
+
+      yearlyTable.appendChild(theadYearly);
+      yearlyTable.appendChild(tbodyYearly);
+      div.appendChild(yearlyTable);
+      //Notes Table
+      const notesTable = document.createElement('table');
+      notesTable.className = "table table-hover text-secondary";
+      const theadNotes = document.createElement("thead");
+      theadNotes.className = "table table-hover text-secondary";
+      const trNotes = document.createElement("tr");
+      trNotes.className = "bg-success text-white";
+      const tbodyNotes = document.createElement('tbody');
+
+      const dateNotes = document.createElement("th");
+      dateNotes.className = "w-25";
+      dateNotes.setAttribute('scope', 'col');
+      dateNotes.appendChild(document.createTextNode("Date"));
+      trNotes.appendChild(dateNotes);
+
+      const notes = document.createElement("th");
+      notes.setAttribute('scope', 'col');
+      notes.appendChild(document.createTextNode("Notes"));
+      trNotes.appendChild(notes);
+      theadNotes.appendChild(trNotes);
+
+      let tr2 = document.createElement("tr");
+      let th2 = document.createElement("th");
+      let td7 = document.createElement("td");
+      th2.setAttribute("scope", "row");
+      th2.appendChild(document.createTextNode("Total"));
+      tr2.appendChild(th2);
+      td7.appendChild(document.createTextNode(60));
+      td7.className="text-success"
+      tr2.appendChild(td7);
+      tbodyNotes.appendChild(tr2);
+
+      notesTable.appendChild(theadNotes);
+      notesTable.appendChild(tbodyNotes)
+      div.appendChild(notesTable);
+
+const token = localStorage.getItem('token');
+      const data = await axios.get('http://localhost:3000/user/reports',{headers:{'Authorization':token}});
+      const report = data.data.report;
+      console.log(report);
+    }
+  } catch (err) {
+    console.log(err)
   }
 });
 //Logout

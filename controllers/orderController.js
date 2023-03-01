@@ -48,6 +48,7 @@ const updateStatus = async (req, res) => {
         return res.status(403).json({ error: err, message: "Something went wrong" });
     }
 }
+
 module.exports = {
     premium: premium,
     updateStatus,

@@ -1,5 +1,6 @@
 const User = require("../models/userModel");
 const Forgot = require("../models/forgotPasswordModel");
+const Expense = require("../models/expenseModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const sequelize = require("../util/database");
@@ -199,10 +200,21 @@ const updatepassword = async (req,res)=>{
   }
   
 }
+
+const getReport = async (req,res)=>{
+  try{
+    const report = await Expense.findAll({where:{userId:req.user.id}});
+    return res.status(200).json({report});
+  }catch(err){
+    return res.status(400).json({err});
+  }
+}
+
 module.exports = {
   signup,
   signin,
   forgotPassword,
   resetPassword,
   updatepassword,
+  getReport,
 };
