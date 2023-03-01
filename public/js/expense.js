@@ -16,9 +16,13 @@ btn.addEventListener("click", async (e) => {
       category: cat.value,
     };
     if (!desc.title) {
-      const expense = await axios.post("http://localhost:3000/expense/addexpense", obj, {
-        headers: { Authorization: token },
-      });
+      const expense = await axios.post(
+        "http://localhost:3000/expense/addexpense",
+        obj,
+        {
+          headers: { Authorization: token },
+        }
+      );
       await location.reload();
     }
   } catch (err) {
@@ -65,15 +69,14 @@ btn.addEventListener("click", async (e) => {
 //fetch expense
 window.addEventListener("DOMContentLoaded", async () => {
   try {
-    const token = localStorage.getItem('token')
+    const token = localStorage.getItem("token");
     if (token) {
-      const response = await axios
-        .get("http://localhost:3000/expense/", {
-          headers: { Authorization: token },
-        });
+      const response = await axios.get("http://localhost:3000/expense/", {
+        headers: { Authorization: token },
+      });
       fetchExpenses(response);
     } else {
-      location.replace('./signin.html');
+      location.replace("./signin.html");
     }
   } catch (err) {
     console.log(err);
@@ -108,7 +111,7 @@ const fetchExpenses = (response) => {
   if (response.data.isPremium === true) {
     let span = document.createElement("span");
     let report = document.createElement("a");
-    report.setAttribute('href', "./report.html");
+    report.setAttribute("href", "./report.html");
     report.className = "btn report text-white";
     report.appendChild(document.createTextNode("Report"));
     premium.appendChild(report);
@@ -156,10 +159,12 @@ const fetchExpenses = (response) => {
 tbody.addEventListener("click", async (e) => {
   try {
     if (e.target.classList.contains("del")) {
-      const deletedExpense = await axios
-        .delete("http://localhost:3000/expense/" + e.target.id, {
+      const deletedExpense = await axios.delete(
+        "http://localhost:3000/expense/" + e.target.id,
+        {
           headers: { Authorization: token },
-        });
+        }
+      );
       await e.target.parentElement.parentElement.remove();
       await location.reload();
     }
@@ -222,7 +227,7 @@ leaderboard.addEventListener("click", (e) => {
         headers: { Authorization: token },
       })
       .then((res) => {
-        console.log(res)
+        console.log(res);
         let data = res.data.userLeaderboard;
         const ldata = document.querySelector(".ldata");
         ldata.className = "mt-5 p-3 border-top border-secondary";
@@ -247,8 +252,8 @@ leaderboard.addEventListener("click", (e) => {
         headtr.appendChild(expense);
         thead.appendChild(headtr);
         table.appendChild(thead);
-        const tbody = document.createElement('tbody');
-        table.appendChild(tbody)
+        const tbody = document.createElement("tbody");
+        table.appendChild(tbody);
         for (let i = 0; i < data.length; i++) {
           let tr = document.createElement("tr");
           let th = document.createElement("th");
@@ -268,120 +273,98 @@ leaderboard.addEventListener("click", (e) => {
   }
 });
 //report
-const expenseTable = document.querySelector('.tableExpense');
+const expenseTable = document.querySelector(".tableExpense");
 leaderboard.addEventListener("click", async (e) => {
   try {
     if (e.target.classList.contains("report")) {
-      expenseTable.style.display = 'none';
-      const div = document.querySelector('.report-table');
+      expenseTable.style.display = "none";
+      const div = document.querySelector(".report-table");
       //Daily table
-      const dayTable = document.createElement('table');
+      const dayTable = document.createElement("table");
       dayTable.className = "table table-hover text-secondary";
       const theadDay = document.createElement("thead");
       const trDay = document.createElement("tr");
       trDay.className = "bg-success text-white";
-      const tbodyDay = document.createElement('tbody');
-
+      const tbodyDay = document.createElement("tbody");
 
       const dat = document.createElement("th");
-      dat.setAttribute('scope', 'col');
+      dat.setAttribute("scope", "col");
       dat.appendChild(document.createTextNode("Date"));
       trDay.appendChild(dat);
 
       const description = document.createElement("th");
-      description.setAttribute('scope', 'col');
+      description.setAttribute("scope", "col");
       description.appendChild(document.createTextNode("Description"));
       trDay.appendChild(description);
 
       const category = document.createElement("th");
-      category.setAttribute('scope', 'col');
+      category.setAttribute("scope", "col");
       category.appendChild(document.createTextNode("Category"));
       trDay.appendChild(category);
 
       const expense = document.createElement("th");
-      expense.setAttribute('scope', 'col');
+      expense.setAttribute("scope", "col");
       expense.appendChild(document.createTextNode("expense"));
       trDay.appendChild(expense);
 
       const income = document.createElement("th");
-      income.setAttribute('scope', 'col');
+      income.setAttribute("scope", "col");
       income.appendChild(document.createTextNode("Income"));
       trDay.appendChild(income);
       theadDay.appendChild(trDay);
       dayTable.appendChild(theadDay);
 
-
       dayTable.appendChild(tbodyDay);
       div.appendChild(dayTable);
       //Yearly Table
-      const yearlyTable = document.createElement('table');
+      const yearlyTable = document.createElement("table");
       yearlyTable.className = "table table-hover text-secondary";
       const theadYearly = document.createElement("thead");
       const trYearly = document.createElement("tr");
       trYearly.className = "bg-success text-white";
-      const tbodyYearly = document.createElement('tbody');
-
+      const tbodyYearly = document.createElement("tbody");
 
       const month = document.createElement("th");
-      month.setAttribute('scope', 'col');
+      month.setAttribute("scope", "col");
       month.appendChild(document.createTextNode("Month"));
       trYearly.appendChild(month);
 
       const inc = document.createElement("th");
-      inc.setAttribute('scope', 'col');
-      inc.appendChild(document.createTextNode("Income"));
+      inc.setAttribute("scope", "col");
+      inc.appendChild(document.createTextNode("Expense"));
       trYearly.appendChild(inc);
 
       const exp = document.createElement("th");
-      exp.setAttribute('scope', 'col');
-      exp.appendChild(document.createTextNode("Expense"));
+      exp.setAttribute("scope", "col");
+      exp.appendChild(document.createTextNode("Income"));
       trYearly.appendChild(exp);
 
       const savings = document.createElement("th");
-      savings.setAttribute('scope', 'col');
+      savings.setAttribute("scope", "col");
       savings.appendChild(document.createTextNode("Savings"));
       trYearly.appendChild(savings);
       theadYearly.appendChild(trYearly);
-
-      let tr1 = document.createElement("tr");
-      let th1 = document.createElement("th");
-      let td4 = document.createElement("td");
-      let td5 = document.createElement("td");
-      let td6 = document.createElement("td");
-      th1.setAttribute("scope", "row");
-      th1.appendChild(document.createTextNode("Total"));
-      tr1.appendChild(th1);
-      td4.appendChild(document.createTextNode(60));
-      td4.className = "text-success"
-      tr1.appendChild(td4);
-      td5.appendChild(document.createTextNode(40));
-      td5.className = "text-danger"
-      tr1.appendChild(td5);
-      td6.appendChild(document.createTextNode(20));
-      td6.className = "text-success";
-      tr1.appendChild(td6);
-      tbodyYearly.appendChild(tr1);
 
       yearlyTable.appendChild(theadYearly);
       yearlyTable.appendChild(tbodyYearly);
       div.appendChild(yearlyTable);
       //Notes Table
-      const notesTable = document.createElement('table');
+      const notesTable = document.createElement("table");
       notesTable.className = "table table-hover text-secondary";
       const theadNotes = document.createElement("thead");
       theadNotes.className = "table table-hover text-secondary";
       const trNotes = document.createElement("tr");
       trNotes.className = "bg-success text-white";
-      const tbodyNotes = document.createElement('tbody');
+      const tbodyNotes = document.createElement("tbody");
 
       const dateNotes = document.createElement("th");
       dateNotes.className = "w-25";
-      dateNotes.setAttribute('scope', 'col');
+      dateNotes.setAttribute("scope", "col");
       dateNotes.appendChild(document.createTextNode("Date"));
       trNotes.appendChild(dateNotes);
 
       const notes = document.createElement("th");
-      notes.setAttribute('scope', 'col');
+      notes.setAttribute("scope", "col");
       notes.appendChild(document.createTextNode("Notes"));
       trNotes.appendChild(notes);
       theadNotes.appendChild(trNotes);
@@ -393,54 +376,466 @@ leaderboard.addEventListener("click", async (e) => {
       th2.appendChild(document.createTextNode("Total"));
       tr2.appendChild(th2);
       td7.appendChild(document.createTextNode(60));
-      td7.className = "text-success"
+      td7.className = "text-success";
       tr2.appendChild(td7);
       tbodyNotes.appendChild(tr2);
 
       notesTable.appendChild(theadNotes);
-      notesTable.appendChild(tbodyNotes)
+      notesTable.appendChild(tbodyNotes);
       div.appendChild(notesTable);
 
-      const token = localStorage.getItem('token');
-      const data = await axios.get('http://localhost:3000/user/reports', { headers: { 'Authorization': token } });
+      const token = localStorage.getItem("token");
+      const data = await axios.get("http://localhost:3000/user/reports", {
+        headers: { Authorization: token },
+      });
       const report = data.data.report;
       let date = new Date();
       let currDay = date.getDate();
       let currMonth = date.getMonth() + 1;
       let currYear = date.getFullYear();
-      console.log(report);
-      for (let i of report) {
-        let str = i.updatedAt.split("T");
+      let amount = [
+        { jan: 0 },
+        { feb: 0 },
+        { mar: 0 },
+        { apr: 0 },
+        { may: 0 },
+        { jun: 0 },
+        { jul: 0 },
+        { aug: 0 },
+        { sep: 0 },
+        { oct: 0 },
+        { nov: 0 },
+        { dec: 0 },
+      ];
+      for (let i = 0; i < report.length; i++) {
+        let str = report[i].updatedAt.split("T");
         let time = str[0].split("-");
         let year = time[0];
         let month = time[1];
         let day = time[2];
-        //day expense
-        // if(time){
+        let nextstr = report[i + 1] ? report[i + 1].updatedAt.split("T") : null;
+        let nexttime = nextstr ? nextstr[0].split("-") : null;
+        let nextyear = nexttime ? nexttime[0] : null;
+        let nextmonth = nexttime ? nexttime[1] : null;
+        let nextday = nexttime ? nexttime[2] : null;
 
-        // }
-        let tr = document.createElement("tr");
-        let th = document.createElement("th");
-        let td = document.createElement("td");
-        let td1 = document.createElement("td");
-        let td2 = document.createElement("td");
-        let td3 = document.createElement("td");
-        th.setAttribute("scope", "row");
-        th.appendChild(document.createTextNode("01-01-2023"));
-        tr.appendChild(th);
-        td.appendChild(document.createTextNode("Milk"));
-        tr.appendChild(td);
-        td1.appendChild(document.createTextNode("Grocerry"));
-        tr.appendChild(td1);
-        td2.appendChild(document.createTextNode("60"));
-        tr.appendChild(td2);
-        td3.appendChild(document.createTextNode("0"));
-        tr.appendChild(td3);
-        tbodyDay.appendChild(tr);
+        //day expense
+        if (year == currYear && month == currMonth) {
+          let tr = document.createElement("tr");
+          let th = document.createElement("th");
+          let td = document.createElement("td");
+          let td1 = document.createElement("td");
+          let td2 = document.createElement("td");
+          let td3 = document.createElement("td");
+          th.setAttribute("scope", "row");
+          th.appendChild(
+            document.createTextNode(day + "-" + month + "-" + year)
+          );
+          tr.appendChild(th);
+          td.appendChild(document.createTextNode(report[i].description));
+          tr.appendChild(td);
+          td1.appendChild(document.createTextNode(report[i].category));
+          tr.appendChild(td1);
+          td2.appendChild(document.createTextNode(report[i].amount));
+          tr.appendChild(td2);
+          td3.appendChild(document.createTextNode(0));
+          tr.appendChild(td3);
+          tbodyDay.appendChild(tr);
+          if (nextday) {
+            if (day !== nextday) {
+              let trs = document.createElement("tr");
+              trs.classList = "bg-success opacity-25";
+              let ths = document.createElement("th");
+              let tds = document.createElement("td");
+              let td1s = document.createElement("td");
+              let td2s = document.createElement("td");
+              let td3s = document.createElement("td");
+              ths.setAttribute("scope", "row");
+              ths.appendChild(document.createTextNode(" "));
+              trs.appendChild(ths);
+              tds.appendChild(document.createTextNode(""));
+              trs.appendChild(tds);
+              td1s.appendChild(document.createTextNode(""));
+              trs.appendChild(td1s);
+              td2s.appendChild(document.createTextNode(""));
+              trs.appendChild(td2s);
+              td3s.appendChild(document.createTextNode("0"));
+              trs.appendChild(td3s);
+              tbodyDay.appendChild(trs);
+            }
+          }
+        }
+        //yearly
+        if (currYear == year && month == 01) {
+          amount[0].jan += report[i].amount;
+        }
+        if (currYear == year && month == 02) {
+          amount[1].feb += report[i].amount;
+        }
+        if (currYear == year && month == 03) {
+          amount[2].mar += report[i].amount;
+        }
+
+        if (currYear == year && month == 04) {
+          amount[3].apr += report[i].amount;
+        }
+        if (currYear == year && month == 05) {
+          amount[4].may += report[i].amount;
+        }
+        if (currYear == year && month == 06) {
+          amount[5].jun += report[i].amount;
+        }
+        if (currYear == year && month == 07) {
+          amount[6].jul += report[i].amount;
+        }
+        if (currYear == year && month == 08) {
+          amount[7].aug += report[i].amount;
+        }
+        if (currYear == year && month == 09) {
+          amount[8].sep += report[i].amount;
+        }
+        if (currYear == year && month == 10) {
+          amount[9].oct += report[i].amount;
+        }
+        if (currYear == year && month == 11) {
+          amount[10].nov += report[i].amount;
+        }
+        if (currYear == year && month == 12) {
+          amount[11].dec += report[i].amount;
+        }
       }
+      if (amount[0].jan != 0) {
+        let totalIncome=0;
+        let tr1 = document.createElement("tr");
+        let th1 = document.createElement("th");
+        let td4 = document.createElement("td");
+        let td5 = document.createElement("td");
+        let td6 = document.createElement("td");
+        th1.setAttribute("scope", "row");
+        th1.appendChild(document.createTextNode("January"));
+        tr1.appendChild(th1);
+        td4.appendChild(document.createTextNode(amount[0].jan));
+        td4.className = "text-danger";
+        tr1.appendChild(td4);
+        td5.appendChild(document.createTextNode(totalIncome));
+        td5.className = "text-success";
+        tr1.appendChild(td5);
+        td6.appendChild(document.createTextNode(totalIncome-amount[0].jan));
+        if(totalIncome-amount[0].jan<0){
+          td6.className = "text-danger";
+        }else{
+          td6.className = "text-success";
+        }
+        
+        tr1.appendChild(td6);
+        tbodyYearly.appendChild(tr1);
+      }
+      if (amount[1].feb != 0) {
+        let totalIncome=0;
+        let tr1 = document.createElement("tr");
+        let th1 = document.createElement("th");
+        let td4 = document.createElement("td");
+        let td5 = document.createElement("td");
+        let td6 = document.createElement("td");
+        th1.setAttribute("scope", "row");
+        th1.appendChild(document.createTextNode("February"));
+        tr1.appendChild(th1);
+        td4.appendChild(document.createTextNode(amount[1].feb));
+        td4.className = "text-danger";
+        tr1.appendChild(td4);
+        td5.appendChild(document.createTextNode(totalIncome));
+        td5.className = "text-success";
+        tr1.appendChild(td5);
+        td6.appendChild(document.createTextNode(totalIncome-amount[1].feb));
+        if(totalIncome-amount[1].feb<0){
+          td6.className = "text-danger";
+        }else{
+          td6.className = "text-success";
+        }
+        tr1.appendChild(td6);
+        tbodyYearly.appendChild(tr1);
+      }
+      if (amount[2].mar != 0) {
+        let totalIncome=0;
+        let tr1 = document.createElement("tr");
+        let th1 = document.createElement("th");
+        let td4 = document.createElement("td");
+        let td5 = document.createElement("td");
+        let td6 = document.createElement("td");
+        th1.setAttribute("scope", "row");
+        th1.appendChild(document.createTextNode("March"));
+        tr1.appendChild(th1);
+        td4.appendChild(document.createTextNode(amount[2].mar));
+        td4.className = "text-danger";
+        tr1.appendChild(td4);
+        td5.appendChild(document.createTextNode(totalIncome));
+        td5.className = "text-success";
+        tr1.appendChild(td5);
+        td6.appendChild(document.createTextNode(totalIncome-amount[2].mar));
+        if(totalIncome-amount[2].mar<0){
+          td6.className = "text-danger";
+        }else{
+          td6.className = "text-success";
+        }
+        tr1.appendChild(td6);
+        tbodyYearly.appendChild(tr1);
+      }
+      if (amount[3].apr != 0) {
+        let totalIncome=0;
+        let tr1 = document.createElement("tr");
+        let th1 = document.createElement("th");
+        let td4 = document.createElement("td");
+        let td5 = document.createElement("td");
+        let td6 = document.createElement("td");
+        th1.setAttribute("scope", "row");
+        th1.appendChild(document.createTextNode("April"));
+        tr1.appendChild(th1);
+        td4.appendChild(document.createTextNode(amount[3].apr));
+        td4.className = "text-danger";
+        tr1.appendChild(td4);
+        td5.appendChild(document.createTextNode(totalIncome));
+        td5.className = "text-success";
+        tr1.appendChild(td5);
+        td6.appendChild(document.createTextNode(totalIncome-amount[3].apr));
+        if(totalIncome-amount[3].apr<0){
+          td6.className = "text-danger";
+        }else{
+          td6.className = "text-success";
+        }
+        tr1.appendChild(td6);
+        tbodyYearly.appendChild(tr1);
+      }
+      if (amount[4].may != 0) {
+        let totalIncome=0;
+        let tr1 = document.createElement("tr");
+        let th1 = document.createElement("th");
+        let td4 = document.createElement("td");
+        let td5 = document.createElement("td");
+        let td6 = document.createElement("td");
+        th1.setAttribute("scope", "row");
+        th1.appendChild(document.createTextNode("May"));
+        tr1.appendChild(th1);
+        td4.appendChild(document.createTextNode(amount[4].may));
+        td4.className = "text-danger";
+        tr1.appendChild(td4);
+        td5.appendChild(document.createTextNode(totalIncome));
+        td5.className = "text-success";
+        tr1.appendChild(td5);
+        td6.appendChild(document.createTextNode(totalIncome-amount[4].may));
+        if(totalIncome-amount[4].may<0){
+          td6.className = "text-danger";
+        }else{
+          td6.className = "text-success";
+        }
+        tr1.appendChild(td6);
+        tbodyYearly.appendChild(tr1);
+      }
+      if (amount[5].jun != 0) {
+        let totalIncome=0;
+        let tr1 = document.createElement("tr");
+        let th1 = document.createElement("th");
+        let td4 = document.createElement("td");
+        let td5 = document.createElement("td");
+        let td6 = document.createElement("td");
+        th1.setAttribute("scope", "row");
+        th1.appendChild(document.createTextNode("June"));
+        tr1.appendChild(th1);
+        td4.appendChild(document.createTextNode(amount[5].jun));
+        td4.className = "text-danger";
+        tr1.appendChild(td4);
+        td5.appendChild(document.createTextNode(totalIncome));
+        td5.className = "text-success";
+        tr1.appendChild(td5);
+        td6.appendChild(document.createTextNode(totalIncome-amount[5].jun));
+        if(totalIncome-amount[5].jun<0){
+          td6.className = "text-danger";
+        }else{
+          td6.className = "text-success";
+        }
+        tr1.appendChild(td6);
+        tbodyYearly.appendChild(tr1);
+      }
+      if (amount[6].jul != 0) {
+        let totalIncome=0;
+        let tr1 = document.createElement("tr");
+        let th1 = document.createElement("th");
+        let td4 = document.createElement("td");
+        let td5 = document.createElement("td");
+        let td6 = document.createElement("td");
+        th1.setAttribute("scope", "row");
+        th1.appendChild(document.createTextNode("July"));
+        tr1.appendChild(th1);
+        td4.appendChild(document.createTextNode(amount[6].jul));
+        td4.className = "text-danger";
+        tr1.appendChild(td4);
+        td5.appendChild(document.createTextNode(totalIncome));
+        td5.className = "text-success";
+        tr1.appendChild(td5);
+        td6.appendChild(document.createTextNode(totalIncome-amount[6].jul));
+        if(totalIncome-amount[6].jul<0){
+          td6.className = "text-danger";
+        }else{
+          td6.className = "text-success";
+        }
+        tr1.appendChild(td6);
+        tbodyYearly.appendChild(tr1);
+      }
+      if (amount[7].aug != 0) {
+        let totalIncome=0;
+        let tr1 = document.createElement("tr");
+        let th1 = document.createElement("th");
+        let td4 = document.createElement("td");
+        let td5 = document.createElement("td");
+        let td6 = document.createElement("td");
+        th1.setAttribute("scope", "row");
+        th1.appendChild(document.createTextNode("August"));
+        tr1.appendChild(th1);
+        td4.appendChild(document.createTextNode(amount[7].aug));
+        td4.className = "text-danger";
+        tr1.appendChild(td4);
+        td5.appendChild(document.createTextNode(totalIncome));
+        td5.className = "text-success";
+        tr1.appendChild(td5);
+        td6.appendChild(document.createTextNode(totalIncome-amount[7].aug));
+        if(totalIncome-amount[7].aug<0){
+          td6.className = "text-danger";
+        }else{
+          td6.className = "text-success";
+        }
+        tr1.appendChild(td6);
+        tbodyYearly.appendChild(tr1);
+      }
+      if (amount[8].sep != 0) {
+        let totalIncome=0;
+        let tr1 = document.createElement("tr");
+        let th1 = document.createElement("th");
+        let td4 = document.createElement("td");
+        let td5 = document.createElement("td");
+        let td6 = document.createElement("td");
+        th1.setAttribute("scope", "row");
+        th1.appendChild(document.createTextNode("September"));
+        tr1.appendChild(th1);
+        td4.appendChild(document.createTextNode(amount[8].sep));
+        td4.className = "text-danger";
+        tr1.appendChild(td4);
+        td5.appendChild(document.createTextNode(totalIncome));
+        td5.className = "text-success";
+        tr1.appendChild(td5);
+        td6.appendChild(document.createTextNode(totalIncome-amount[8].sep));
+        if(totalIncome-amount[8].sep<0){
+          td6.className = "text-danger";
+        }else{
+          td6.className = "text-success";
+        }
+        tr1.appendChild(td6);
+        tbodyYearly.appendChild(tr1);
+      }
+      if (amount[9].oct != 0) {
+        let totalIncome=0;
+        let tr1 = document.createElement("tr");
+        let th1 = document.createElement("th");
+        let td4 = document.createElement("td");
+        let td5 = document.createElement("td");
+        let td6 = document.createElement("td");
+        th1.setAttribute("scope", "row");
+        th1.appendChild(document.createTextNode("October"));
+        tr1.appendChild(th1);
+        td4.appendChild(document.createTextNode(amount[9].oct));
+        td4.className = "text-danger";
+        tr1.appendChild(td4);
+        td5.appendChild(document.createTextNode(totalIncome));
+        td5.className = "text-success";
+        tr1.appendChild(td5);
+        td6.appendChild(document.createTextNode(totalIncome-amount[9].oct));
+        if(totalIncome-amount[9].oct<0){
+          td6.className = "text-danger";
+        }else{
+          td6.className = "text-success";
+        }
+        tr1.appendChild(td6);
+        tbodyYearly.appendChild(tr1);
+      }
+      if (amount[10].nov != 0) {
+        let totalIncome=0;
+        let tr1 = document.createElement("tr");
+        let th1 = document.createElement("th");
+        let td4 = document.createElement("td");
+        let td5 = document.createElement("td");
+        let td6 = document.createElement("td");
+        th1.setAttribute("scope", "row");
+        th1.appendChild(document.createTextNode("November"));
+        tr1.appendChild(th1);
+        td4.appendChild(document.createTextNode(amount[10].nov));
+        td4.className = "text-danger";
+        tr1.appendChild(td4);
+        td5.appendChild(document.createTextNode(totalIncome));
+        td5.className = "text-success";
+        tr1.appendChild(td5);
+        td6.appendChild(document.createTextNode(totalIncome-amount[10].nov));
+        if(totalIncome-amount[10].nov<0){
+          td6.className = "text-danger";
+        }else{
+          td6.className = "text-success";
+        }
+        tr1.appendChild(td6);
+        tbodyYearly.appendChild(tr1);
+      }
+      if (amount[11].dec != 0) {
+        let totalIncome=0;
+        let tr1 = document.createElement("tr");
+        let th1 = document.createElement("th");
+        let td4 = document.createElement("td");
+        let td5 = document.createElement("td");
+        let td6 = document.createElement("td");
+        th1.setAttribute("scope", "row");
+        th1.appendChild(document.createTextNode("December"));
+        tr1.appendChild(th1);
+        td4.appendChild(document.createTextNode(amount[11].dec));
+        td4.className = "text-danger";
+        tr1.appendChild(td4);
+        td5.appendChild(document.createTextNode(totalIncome));
+        td5.className = "text-success";
+        tr1.appendChild(td5);
+        td6.appendChild(document.createTextNode(totalIncome-amount[11].dec));
+        if(totalIncome-amount[11].dec<0){
+          td6.className = "text-danger";
+        }else{
+          td6.className = "text-success";
+        }
+        tr1.appendChild(td6);
+        tbodyYearly.appendChild(tr1);
+      }
+      let tr1 = document.createElement("tr");
+      let th1 = document.createElement("th");
+      let td4 = document.createElement("td");
+      let td5 = document.createElement("td");
+      let td6 = document.createElement("td");
+      let totalExpense=0;
+      let totalIncome=0
+      for(let a of amount){
+        totalExpense+=Number(Object.values(a));
+      }
+      th1.setAttribute("scope", "row");
+      th1.appendChild(document.createTextNode("Total"));
+      tr1.appendChild(th1);
+      td4.appendChild(document.createTextNode(totalExpense));
+      td4.className = "text-danger";
+      tr1.appendChild(td4);
+      td5.appendChild(document.createTextNode(totalIncome));
+      td5.className = "text-success";
+      tr1.appendChild(td5);
+      td6.appendChild(document.createTextNode(totalIncome-totalExpense));
+      if(totalIncome-totalExpense>=0){
+        td6.className = "text-success";
+      }else{
+        td6.className = "text-danger";
+      }
+      
+      tr1.appendChild(td6);
+      tbodyYearly.appendChild(tr1);
     }
   } catch (err) {
-    console.log(err)
+    console.log(err);
   }
 });
 //Logout
@@ -448,7 +843,7 @@ const signout = document.querySelector(".nav");
 signout.addEventListener("click", async (e) => {
   e.preventDefault();
   if (e.target.classList.contains("logout")) {
-    await localStorage.removeItem('token');
-    await location.replace('./signin.html');
+    await localStorage.removeItem("token");
+    await location.replace("./signin.html");
   }
 });

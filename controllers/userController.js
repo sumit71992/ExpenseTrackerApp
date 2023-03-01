@@ -203,7 +203,9 @@ const updatepassword = async (req,res)=>{
 
 const getReport = async (req,res)=>{
   try{
-    const report = await Expense.findAll({where:{userId:req.user.id}});
+    const report = await Expense.findAll({where:{userId:req.user.id},
+      order: [['updatedAt', "ASC"]]
+    });
     return res.status(200).json({report});
   }catch(err){
     return res.status(400).json({err});
