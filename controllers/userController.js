@@ -161,7 +161,7 @@ const resetPassword = async (req, res) => {
                   const obj = {
                       password: password.value
                   }
-                  await axios.post("http://localhost:3000/password/updatepassword/${uuid}", obj);
+                  const updated = await axios.post("http://localhost:3000/password/updatepassword/${uuid}", obj);
       
               })
           </script>
