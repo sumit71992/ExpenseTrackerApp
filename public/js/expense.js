@@ -1,5 +1,5 @@
 // const Razorpay = import("razorpay");
-
+const pagination = document.getElementById('pagination');
 let amount = document.querySelector("#expense_input");
 let desc = document.getElementById("description_input");
 let cat = document.getElementById("category_input");
@@ -69,12 +69,18 @@ btn.addEventListener("click", async (e) => {
 //fetch expense
 window.addEventListener("DOMContentLoaded", async () => {
   try {
+    const page = 1;
     const token = localStorage.getItem("token");
     if (token) {
-      const response = await axios.get("http://localhost:3000/expense/", {
-        headers: { Authorization: token },
-      });
+      const response = await axios.get(
+        `http://localhost:3000/expense?page=${page}`,
+        {
+          headers: { Authorization: token },
+        }
+      );
+      console.log(response);
       fetchExpenses(response);
+      showPagination(response);
     } else {
       location.replace("./signin.html");
     }
@@ -82,7 +88,41 @@ window.addEventListener("DOMContentLoaded", async () => {
     console.log(err);
   }
 });
+//pagination
 
+const showPagination =async (response) => {
+  pagination.innerHTML = "";
+  if (response.data.hasPreviousPage) {
+    const btn = document.createElement("button");
+    btn.className="m-1"
+    btn.innerHTML = response.data.previousPage;
+    await btn.addEventListener("click", () => {
+      getExpense(response.data.previousPage)
+    });
+    pagination.appendChild(btn);
+  }
+  const btn1 = document.createElement("button");
+  btn1.className="m-1"
+  btn1.innerHTML = `<h3>${response.data.currentPage}</h3>`;
+  await btn1.addEventListener("click", () =>{ 
+    getExpense(response.data.currentPage)
+  });
+  pagination.appendChild(btn1);
+  if (response.data.hasNextPage) {
+    const btn2 = document.createElement("button");
+    btn2.className="m-1"
+    btn2.innerHTML = response.data.nextPage;
+     btn2.addEventListener("click", async () => {
+      await getExpense(response.data.nextPage);
+    });
+    pagination.appendChild(btn2);
+  }
+};
+const getExpense = async (page) => {
+  const expense = await axios.get(`http://localhost:3000/expense?page=${page}`,{headers: { Authorization: token },});
+  await showPagination(expense);
+  await fetchExpenses(expense);
+};
 // //edit expense
 // ul.addEventListener("click", editEvent);
 // function editEvent(e) {
@@ -505,7 +545,7 @@ leaderboard.addEventListener("click", async (e) => {
         }
       }
       if (amount[0].jan != 0) {
-        let totalIncome=0;
+        let totalIncome = 0;
         let tr1 = document.createElement("tr");
         let th1 = document.createElement("th");
         let td4 = document.createElement("td");
@@ -520,18 +560,18 @@ leaderboard.addEventListener("click", async (e) => {
         td5.appendChild(document.createTextNode(totalIncome));
         td5.className = "text-success";
         tr1.appendChild(td5);
-        td6.appendChild(document.createTextNode(totalIncome-amount[0].jan));
-        if(totalIncome-amount[0].jan<0){
+        td6.appendChild(document.createTextNode(totalIncome - amount[0].jan));
+        if (totalIncome - amount[0].jan < 0) {
           td6.className = "text-danger";
-        }else{
+        } else {
           td6.className = "text-success";
         }
-        
+
         tr1.appendChild(td6);
         tbodyYearly.appendChild(tr1);
       }
       if (amount[1].feb != 0) {
-        let totalIncome=0;
+        let totalIncome = 0;
         let tr1 = document.createElement("tr");
         let th1 = document.createElement("th");
         let td4 = document.createElement("td");
@@ -546,17 +586,17 @@ leaderboard.addEventListener("click", async (e) => {
         td5.appendChild(document.createTextNode(totalIncome));
         td5.className = "text-success";
         tr1.appendChild(td5);
-        td6.appendChild(document.createTextNode(totalIncome-amount[1].feb));
-        if(totalIncome-amount[1].feb<0){
+        td6.appendChild(document.createTextNode(totalIncome - amount[1].feb));
+        if (totalIncome - amount[1].feb < 0) {
           td6.className = "text-danger";
-        }else{
+        } else {
           td6.className = "text-success";
         }
         tr1.appendChild(td6);
         tbodyYearly.appendChild(tr1);
       }
       if (amount[2].mar != 0) {
-        let totalIncome=0;
+        let totalIncome = 0;
         let tr1 = document.createElement("tr");
         let th1 = document.createElement("th");
         let td4 = document.createElement("td");
@@ -571,17 +611,17 @@ leaderboard.addEventListener("click", async (e) => {
         td5.appendChild(document.createTextNode(totalIncome));
         td5.className = "text-success";
         tr1.appendChild(td5);
-        td6.appendChild(document.createTextNode(totalIncome-amount[2].mar));
-        if(totalIncome-amount[2].mar<0){
+        td6.appendChild(document.createTextNode(totalIncome - amount[2].mar));
+        if (totalIncome - amount[2].mar < 0) {
           td6.className = "text-danger";
-        }else{
+        } else {
           td6.className = "text-success";
         }
         tr1.appendChild(td6);
         tbodyYearly.appendChild(tr1);
       }
       if (amount[3].apr != 0) {
-        let totalIncome=0;
+        let totalIncome = 0;
         let tr1 = document.createElement("tr");
         let th1 = document.createElement("th");
         let td4 = document.createElement("td");
@@ -596,17 +636,17 @@ leaderboard.addEventListener("click", async (e) => {
         td5.appendChild(document.createTextNode(totalIncome));
         td5.className = "text-success";
         tr1.appendChild(td5);
-        td6.appendChild(document.createTextNode(totalIncome-amount[3].apr));
-        if(totalIncome-amount[3].apr<0){
+        td6.appendChild(document.createTextNode(totalIncome - amount[3].apr));
+        if (totalIncome - amount[3].apr < 0) {
           td6.className = "text-danger";
-        }else{
+        } else {
           td6.className = "text-success";
         }
         tr1.appendChild(td6);
         tbodyYearly.appendChild(tr1);
       }
       if (amount[4].may != 0) {
-        let totalIncome=0;
+        let totalIncome = 0;
         let tr1 = document.createElement("tr");
         let th1 = document.createElement("th");
         let td4 = document.createElement("td");
@@ -621,17 +661,17 @@ leaderboard.addEventListener("click", async (e) => {
         td5.appendChild(document.createTextNode(totalIncome));
         td5.className = "text-success";
         tr1.appendChild(td5);
-        td6.appendChild(document.createTextNode(totalIncome-amount[4].may));
-        if(totalIncome-amount[4].may<0){
+        td6.appendChild(document.createTextNode(totalIncome - amount[4].may));
+        if (totalIncome - amount[4].may < 0) {
           td6.className = "text-danger";
-        }else{
+        } else {
           td6.className = "text-success";
         }
         tr1.appendChild(td6);
         tbodyYearly.appendChild(tr1);
       }
       if (amount[5].jun != 0) {
-        let totalIncome=0;
+        let totalIncome = 0;
         let tr1 = document.createElement("tr");
         let th1 = document.createElement("th");
         let td4 = document.createElement("td");
@@ -646,17 +686,17 @@ leaderboard.addEventListener("click", async (e) => {
         td5.appendChild(document.createTextNode(totalIncome));
         td5.className = "text-success";
         tr1.appendChild(td5);
-        td6.appendChild(document.createTextNode(totalIncome-amount[5].jun));
-        if(totalIncome-amount[5].jun<0){
+        td6.appendChild(document.createTextNode(totalIncome - amount[5].jun));
+        if (totalIncome - amount[5].jun < 0) {
           td6.className = "text-danger";
-        }else{
+        } else {
           td6.className = "text-success";
         }
         tr1.appendChild(td6);
         tbodyYearly.appendChild(tr1);
       }
       if (amount[6].jul != 0) {
-        let totalIncome=0;
+        let totalIncome = 0;
         let tr1 = document.createElement("tr");
         let th1 = document.createElement("th");
         let td4 = document.createElement("td");
@@ -671,17 +711,17 @@ leaderboard.addEventListener("click", async (e) => {
         td5.appendChild(document.createTextNode(totalIncome));
         td5.className = "text-success";
         tr1.appendChild(td5);
-        td6.appendChild(document.createTextNode(totalIncome-amount[6].jul));
-        if(totalIncome-amount[6].jul<0){
+        td6.appendChild(document.createTextNode(totalIncome - amount[6].jul));
+        if (totalIncome - amount[6].jul < 0) {
           td6.className = "text-danger";
-        }else{
+        } else {
           td6.className = "text-success";
         }
         tr1.appendChild(td6);
         tbodyYearly.appendChild(tr1);
       }
       if (amount[7].aug != 0) {
-        let totalIncome=0;
+        let totalIncome = 0;
         let tr1 = document.createElement("tr");
         let th1 = document.createElement("th");
         let td4 = document.createElement("td");
@@ -696,17 +736,17 @@ leaderboard.addEventListener("click", async (e) => {
         td5.appendChild(document.createTextNode(totalIncome));
         td5.className = "text-success";
         tr1.appendChild(td5);
-        td6.appendChild(document.createTextNode(totalIncome-amount[7].aug));
-        if(totalIncome-amount[7].aug<0){
+        td6.appendChild(document.createTextNode(totalIncome - amount[7].aug));
+        if (totalIncome - amount[7].aug < 0) {
           td6.className = "text-danger";
-        }else{
+        } else {
           td6.className = "text-success";
         }
         tr1.appendChild(td6);
         tbodyYearly.appendChild(tr1);
       }
       if (amount[8].sep != 0) {
-        let totalIncome=0;
+        let totalIncome = 0;
         let tr1 = document.createElement("tr");
         let th1 = document.createElement("th");
         let td4 = document.createElement("td");
@@ -721,17 +761,17 @@ leaderboard.addEventListener("click", async (e) => {
         td5.appendChild(document.createTextNode(totalIncome));
         td5.className = "text-success";
         tr1.appendChild(td5);
-        td6.appendChild(document.createTextNode(totalIncome-amount[8].sep));
-        if(totalIncome-amount[8].sep<0){
+        td6.appendChild(document.createTextNode(totalIncome - amount[8].sep));
+        if (totalIncome - amount[8].sep < 0) {
           td6.className = "text-danger";
-        }else{
+        } else {
           td6.className = "text-success";
         }
         tr1.appendChild(td6);
         tbodyYearly.appendChild(tr1);
       }
       if (amount[9].oct != 0) {
-        let totalIncome=0;
+        let totalIncome = 0;
         let tr1 = document.createElement("tr");
         let th1 = document.createElement("th");
         let td4 = document.createElement("td");
@@ -746,17 +786,17 @@ leaderboard.addEventListener("click", async (e) => {
         td5.appendChild(document.createTextNode(totalIncome));
         td5.className = "text-success";
         tr1.appendChild(td5);
-        td6.appendChild(document.createTextNode(totalIncome-amount[9].oct));
-        if(totalIncome-amount[9].oct<0){
+        td6.appendChild(document.createTextNode(totalIncome - amount[9].oct));
+        if (totalIncome - amount[9].oct < 0) {
           td6.className = "text-danger";
-        }else{
+        } else {
           td6.className = "text-success";
         }
         tr1.appendChild(td6);
         tbodyYearly.appendChild(tr1);
       }
       if (amount[10].nov != 0) {
-        let totalIncome=0;
+        let totalIncome = 0;
         let tr1 = document.createElement("tr");
         let th1 = document.createElement("th");
         let td4 = document.createElement("td");
@@ -771,17 +811,17 @@ leaderboard.addEventListener("click", async (e) => {
         td5.appendChild(document.createTextNode(totalIncome));
         td5.className = "text-success";
         tr1.appendChild(td5);
-        td6.appendChild(document.createTextNode(totalIncome-amount[10].nov));
-        if(totalIncome-amount[10].nov<0){
+        td6.appendChild(document.createTextNode(totalIncome - amount[10].nov));
+        if (totalIncome - amount[10].nov < 0) {
           td6.className = "text-danger";
-        }else{
+        } else {
           td6.className = "text-success";
         }
         tr1.appendChild(td6);
         tbodyYearly.appendChild(tr1);
       }
       if (amount[11].dec != 0) {
-        let totalIncome=0;
+        let totalIncome = 0;
         let tr1 = document.createElement("tr");
         let th1 = document.createElement("th");
         let td4 = document.createElement("td");
@@ -796,10 +836,10 @@ leaderboard.addEventListener("click", async (e) => {
         td5.appendChild(document.createTextNode(totalIncome));
         td5.className = "text-success";
         tr1.appendChild(td5);
-        td6.appendChild(document.createTextNode(totalIncome-amount[11].dec));
-        if(totalIncome-amount[11].dec<0){
+        td6.appendChild(document.createTextNode(totalIncome - amount[11].dec));
+        if (totalIncome - amount[11].dec < 0) {
           td6.className = "text-danger";
-        }else{
+        } else {
           td6.className = "text-success";
         }
         tr1.appendChild(td6);
@@ -810,10 +850,10 @@ leaderboard.addEventListener("click", async (e) => {
       let td4 = document.createElement("td");
       let td5 = document.createElement("td");
       let td6 = document.createElement("td");
-      let totalExpense=0;
-      let totalIncome=0
-      for(let a of amount){
-        totalExpense+=Number(Object.values(a));
+      let totalExpense = 0;
+      let totalIncome = 0;
+      for (let a of amount) {
+        totalExpense += Number(Object.values(a));
       }
       th1.setAttribute("scope", "row");
       th1.appendChild(document.createTextNode("Total"));
@@ -824,13 +864,13 @@ leaderboard.addEventListener("click", async (e) => {
       td5.appendChild(document.createTextNode(totalIncome));
       td5.className = "text-success";
       tr1.appendChild(td5);
-      td6.appendChild(document.createTextNode(totalIncome-totalExpense));
-      if(totalIncome-totalExpense>=0){
+      td6.appendChild(document.createTextNode(totalIncome - totalExpense));
+      if (totalIncome - totalExpense >= 0) {
         td6.className = "text-success";
-      }else{
+      } else {
         td6.className = "text-danger";
       }
-      
+
       tr1.appendChild(td6);
       tbodyYearly.appendChild(tr1);
     }
