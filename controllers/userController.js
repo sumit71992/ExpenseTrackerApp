@@ -76,7 +76,7 @@ const forgotPassword = async (req, res, next) => {
       const tranEmailApi = new Sib.TransactionalEmailsApi();
       const sender = {
         email: "thatanjan@gmail.com",
-        name: "Anjan",
+        name: "Sumit",
       };
       const receivers = [
         {
@@ -113,7 +113,7 @@ const resetPassword = async (req, res) => {
   try {
     const uuid = req.params.id;
     const reset = await Forgot.findByPk(uuid, { transaction: t });
-    if (reset.isActive === true || reset.isActive === false) {
+    if (reset.isActive === true) {
       await Forgot.update(
         {
           isActive: false,
@@ -121,19 +121,54 @@ const resetPassword = async (req, res) => {
         { where: { id: uuid }, transaction: t }
       );
       await t.commit();
-      res.status(200).send(`<html>
-                                    <script>
-                                        function formsubmitted(e){
-                                            e.preventDefault();
-                                            console.log('called')
-                                        }
-                                    </script>
-                                    <form action="/password/updatepassword/${uuid}" method="post">
-                                        <label for="newpassword">Enter New password</label>
-                                        <input id="newpassword" name="newpassword" type="password" required></input>
-                                        <button>reset password</button>
-                                    </form>
-                                </html>`);
+      res.status(200).send(`<!DOCTYPE html>
+      <html lang="en">
+      
+      <head>
+          <meta charset="UTF-8">
+          <meta http-equiv="X-UA-Compatible" content="IE=edge">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+              integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.2/axios.min.js"
+              integrity="sha512-NCiXRSV460cHD9ClGDrTbTaw0muWUBf/zB/yLzJavRsPNUl9ODkUVmUHsZtKu17XknhsGlmyVoJxLg/ZQQEeGA=="
+              crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+          <title>Forgot Password</title>
+      </head>
+      
+      <body>
+          <div class="container-fluid p-5">
+              <div class="container w-25 border border-secondary">
+                  <h6 class="text-center message text-danger"></h6>
+                  <h3 class="text-center text-secondary my-4">Enter New Password</h3>
+                  <form class="form">
+                      <div class="email p-2">
+                          <label for="password">Password:</label>
+                          <input class="w-100" id="password" type="password" name="password" value="">
+                      </div>
+                      <div class="p-2 text-center">
+                          <button id="update" type="submit" class="mt-5 mb-3 btn btn-success">Reset Password</button>
+                      </div>
+                  </form>
+              </div>
+          </div>
+          <script>
+              const btn = document.getElementById('update');
+              const password = document.getElementById('password');
+      
+              btn.addEventListener('click', async (e) => {
+                  e.preventDefault();
+                  const obj = {
+                      password: password.value
+                  }
+                  await axios.post("http://localhost:3000/password/updatepassword/${uuid}", obj);
+      
+              })
+          </script>
+      
+      </body>
+      
+      </html>`);
      
       res.end();
       // return res.json({ message: "Success" });
@@ -148,20 +183,20 @@ const resetPassword = async (req, res) => {
   }
 };
 const updatepassword = async (req,res)=>{
-  console.log(">>>>.",req.params.id)
-  // const t = await sequelize.transaction();
-  // try{
-  //   const id = req.params.id;
-  //   const pwd = req.query.newpassword;
-  //   const userid = await Forgot.findByPk(id,{transaction:t});
-  //   await User.update({
-  //     password:pwd
-  //   },{where:{id:userid.userId},transaction:t});
-  //   await t.commit();
-  // }catch(err){
-  //   await t.rollback();
-  //   console.log(err);
-  // }
+  const t = await sequelize.transaction();
+  try{
+    const id = req.params.id;
+    const pwd = await bcrypt.hash(req.body.password,10) ;
+    const userid = await Forgot.findByPk(id,{transaction:t});
+    await User.update({
+      password:pwd
+    },{where:{id:userid.userId},transaction:t});
+    await t.commit();
+    return res.status(200).json({message:"Success"});
+  }catch(err){
+    await t.rollback();
+    console.log(err);
+  }
   
 }
 module.exports = {
