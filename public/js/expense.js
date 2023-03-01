@@ -107,6 +107,10 @@ const fetchExpenses = (response) => {
 
   if (response.data.isPremium === true) {
     let span = document.createElement("span");
+    let report = document.createElement("button");
+    report.className = "btn report text-white";
+    report.appendChild(document.createTextNode("Report"));
+    premium.appendChild(btn);
     let btn = document.createElement("button");
     btn.className = "btn leaderboard text-white";
     btn.appendChild(document.createTextNode("Leaderboard"));
