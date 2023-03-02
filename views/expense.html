@@ -49,6 +49,19 @@
         </div>
         <div class="pt-5 expense-table vh-100 d-flex flex-column align-items-center">
             <div class="w-75 pt-3 report-table">
+                <div class="d-flex justify-content-end">
+                    <div class="rowSelection w-25">
+                        <label for="rowOptions">Select row:</label>
+                        <select name="rowOptions" id="rowOptions" class="w-50" onchange="setRow()">
+                            <option value="5">5</option>
+                            <option value="8">8</option>
+                            <option value="10">10</option>
+                            <option value="20">20</option>
+                            <option value="30">30</option>
+                            <option value="40">40</option>
+                        </select>
+                    </div>
+                </div>
                 <table class="table table-hover text-secondary tableExpense">
                     <thead>
                         <tr>
@@ -67,12 +80,12 @@
                 <div class="ldata">
 
                 </div>
-              
-                    <table class="table w-100 table-hover text-secondary leaderboard-table">
-                    
-                    </table>
-             
-                
+
+                <table class="table w-100 table-hover text-secondary leaderboard-table">
+
+                </table>
+
+
             </div>
 
         </div>

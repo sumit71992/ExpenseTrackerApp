@@ -71,9 +71,10 @@ window.addEventListener("DOMContentLoaded", async () => {
   try {
     const page = 1;
     const token = localStorage.getItem("token");
+    const ltd = localStorage.getItem("row")
     if (token) {
       const response = await axios.get(
-        `http://localhost:3000/expense?page=${page}`,
+        `http://localhost:3000/expense?page=${page}=${ltd}`,
         {
           headers: { Authorization: token },
         }
@@ -119,7 +120,8 @@ const showPagination =async (response) => {
   }
 };
 const getExpense = async (page) => {
-  const expense = await axios.get(`http://localhost:3000/expense?page=${page}`,{headers: { Authorization: token },});
+  const ltd= localStorage.getItem("row");
+  const expense = await axios.get(`http://localhost:3000/expense?page=${page}=${ltd}`,{headers: { Authorization: token },});
   await showPagination(expense);
   await fetchExpenses(expense);
 };
@@ -887,3 +889,8 @@ signout.addEventListener("click", async (e) => {
     await location.replace("./signin.html");
   }
 });
+//row
+const setRow = ()=>{
+  let row = document.getElementById('rowOptions').value;
+  localStorage.setItem("row",row);
+}

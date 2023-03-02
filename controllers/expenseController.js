@@ -33,23 +33,25 @@ exports.addExpense = async (req, res, next) => {
 };
 exports.getAllExpenses = async (req, res, next) => {
   try {
-    const page = +req.query.page || 1;
-    console.log(">>>>>>>>>>>>>>>>>>>>>>",page);
+    const str = req.query.page;
+    const page = Number(str.split("=")[0]);
+    const ltd = Number(str.split("=")[1]);
+
     let count = await Expense.count({ where: { userId: req.user.id } });
     const isPremium = req.user.isPremium;
     const expenses = await Expense.findAll({
       where: { userId: req.user.id },
-      offset: (page - 1) * 10,
-      limit: 10,
+      offset: (page - 1) * ltd,
+      limit: ltd,
     });
     return res.status(200).json({
       expenses,
       isPremium,
-      hasNextPage: 10*page<count,
+      hasNextPage: ltd*page<count,
       nextPage:page+1,
       hasPreviousPage:page>1,
       previousPage:page-1,
-      lastPage:Math.ceil(count/10),
+      lastPage:Math.ceil(count/ltd),
       currentPage:page
     });
   } catch (err) {
