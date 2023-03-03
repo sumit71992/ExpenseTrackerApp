@@ -91,11 +91,11 @@ window.addEventListener("DOMContentLoaded", async () => {
 });
 //pagination
 
-const showPagination =async (response) => {
+const showPagination = async (response) => {
   pagination.innerHTML = "";
   if (response.data.hasPreviousPage) {
     const btn = document.createElement("button");
-    btn.className="m-1"
+    btn.className = "m-1"
     btn.innerHTML = response.data.previousPage;
     await btn.addEventListener("click", () => {
       getExpense(response.data.previousPage)
@@ -103,25 +103,25 @@ const showPagination =async (response) => {
     pagination.appendChild(btn);
   }
   const btn1 = document.createElement("button");
-  btn1.className="m-1"
+  btn1.className = "m-1"
   btn1.innerHTML = `<h3>${response.data.currentPage}</h3>`;
-  await btn1.addEventListener("click", () =>{ 
+  await btn1.addEventListener("click", () => {
     getExpense(response.data.currentPage)
   });
   pagination.appendChild(btn1);
   if (response.data.hasNextPage) {
     const btn2 = document.createElement("button");
-    btn2.className="m-1"
+    btn2.className = "m-1"
     btn2.innerHTML = response.data.nextPage;
-     btn2.addEventListener("click", async () => {
+    btn2.addEventListener("click", async () => {
       await getExpense(response.data.nextPage);
     });
     pagination.appendChild(btn2);
   }
 };
 const getExpense = async (page) => {
-  const ltd= localStorage.getItem("row");
-  const expense = await axios.get(`http://localhost:3000/expense?page=${page}=${ltd}`,{headers: { Authorization: token },});
+  const ltd = localStorage.getItem("row");
+  const expense = await axios.get(`http://localhost:3000/expense?page=${page}=${ltd}`, { headers: { Authorization: token }, });
   await showPagination(expense);
   await fetchExpenses(expense);
 };
@@ -319,6 +319,11 @@ const expenseTable = document.querySelector(".tableExpense");
 leaderboard.addEventListener("click", async (e) => {
   try {
     if (e.target.classList.contains("report")) {
+      document.querySelector("#pagination").style.display = "none";
+      document.querySelector(".rowSelection").style.display = "none";
+      document.querySelector("#download").style.display = "block";
+
+
       expenseTable.style.display = "none";
       const div = document.querySelector(".report-table");
       //Daily table
@@ -890,12 +895,20 @@ signout.addEventListener("click", async (e) => {
   }
 });
 //row
-const setRow = ()=>{
+const setRow = () => {
   let row = document.getElementById('rowOptions').value;
-  localStorage.setItem("row",row);
+  localStorage.setItem("row", row);
 }
 //download
-document.querySelector(".download").addEventListener("click",async (e)=>{
-  e.preventDefault();
-  await axios.get("http://localhost:3000/user/download",{headers:{'Authorization':token}});
+document.querySelector(".download").addEventListener("click", async (e) => {
+  try {
+    e.preventDefault();
+    const downloadData = await axios.get("http://localhost:3000/user/download", { headers: { 'Authorization': token } });
+    var a = document.createElement("a");
+    a.href = downloadData.data.fileURL;
+    a.download = 'myexpenses.csv';
+    a.click();
+  } catch (err) {
+    console.log(err)
+  }
 })

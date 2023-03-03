@@ -47,12 +47,12 @@ exports.getAllExpenses = async (req, res, next) => {
     return res.status(200).json({
       expenses,
       isPremium,
-      hasNextPage: ltd*page<count,
-      nextPage:page+1,
-      hasPreviousPage:page>1,
-      previousPage:page-1,
-      lastPage:Math.ceil(count/ltd),
-      currentPage:page
+      hasNextPage: ltd * page < count,
+      nextPage: page + 1,
+      hasPreviousPage: page > 1,
+      previousPage: page - 1,
+      lastPage: Math.ceil(count / ltd),
+      currentPage: page
     });
   } catch (err) {
     console.log(err);
@@ -118,36 +118,43 @@ exports.getLeaderboard = async (req, res) => {
   }
 };
 
-exports.downloadExpense = async (req,res)=>{
-  try{
-const expenses = await req.user.getExpenses();
-const stringifiedExpenses = JSON.stringify(expenses);
-const filename = 'Expense.txt';
-const fileURL = uploadToS3(stringifiedExpenses, filename);
-res.status(200).json({fileURL, message:"Uploaded successfully"})
-  }catch(err){
+exports.downloadExpense = async (req, res) => {
+  try {
+    const expenses = await req.user.getExpenses();
+    const stringifiedExpenses = JSON.stringify(expenses);
+    const filename = `Expense${req.user.id}/${Date.now()}.txt`;
+    const fileURL = await uploadToS3(stringifiedExpenses, filename);
+    return res.status(200).json({ fileURL, message: "Uploaded successfully" })
+  } catch (err) {
     console.log(err);
   }
 };
-const uploadToS3 = async(data,filename)=>{
-  const BUCKET_NAME="skexpense";
-  const IAM_USER_KEY =process.env.AWS_USER_KEY;
-  const IAM_USER_SECRET=process.env.AWS_SECRET_KEY;
-  let s3bucket = new AWS.S3({
-    accessKeyId: IAM_USER_KEY,
-    secretAccessKey: IAM_USER_SECRET,
-    // Bucket: BUCKET_NAME
-  })
-  let fileDetails = {
-    Bucket:BUCKET_NAME,
-    Key: filename,
-    Body: data
-  }
-  s3bucket.upload(fileDetails,(err,response)=>{
-    if(err){
-      console.log("Something went wrong",err);
-    }else{
-      console.log("successfully uploaded",response);
+const uploadToS3 = async (data, filename) => {
+  try {
+    const BUCKET_NAME = "skexpense";
+    const IAM_USER_KEY = process.env.AWS_USER_KEY;
+    const IAM_USER_SECRET = process.env.AWS_SECRET_KEY;
+    let s3bucket = new AWS.S3({
+      accessKeyId: IAM_USER_KEY,
+      secretAccessKey: IAM_USER_SECRET,
+    })
+    let fileDetails = {
+      Bucket: BUCKET_NAME,
+      Key: filename,
+      Body: data,
+      ACL: 'public-read'
     }
-  })
+    return new Promise((resolve, reject) => {
+      s3bucket.upload(fileDetails, (err, response) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(response.Location);
+        }
+      });
+    })
+  } catch (err) {
+    console.log(err);
+    return res.status(402).json({ err, message: "Something went wrong" });
+  }
 }
