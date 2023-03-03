@@ -71,7 +71,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   try {
     const page = 1;
     const token = localStorage.getItem("token");
-    const ltd = localStorage.getItem("row")
+    const ltd = localStorage.getItem("row") || 10;
     if (token) {
       const response = await axios.get(
         `http://localhost:3000/expense?page=${page}=${ltd}`,
@@ -894,3 +894,8 @@ const setRow = ()=>{
   let row = document.getElementById('rowOptions').value;
   localStorage.setItem("row",row);
 }
+//download
+document.querySelector(".download").addEventListener("click",async (e)=>{
+  e.preventDefault();
+  await axios.get("http://localhost:3000/user/download",{headers:{'Authorization':token}});
+})

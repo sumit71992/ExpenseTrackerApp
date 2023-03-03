@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 const sequelize = require("../util/database");
 const Sib = require("sib-api-v3-sdk");
 const { v4: uuidv4 } = require("uuid");
-require("dotenv").config();
+
 
 const signup = async (req, res, next) => {
   const t = await sequelize.transaction();
@@ -38,7 +38,7 @@ const signup = async (req, res, next) => {
   }
 };
 const authUser = (id, name) => {
-  return jwt.sign({ userId: id, userName: name }, "hg7fb75ytvhjgety3787v");
+  return jwt.sign({ userId: id, userName: name }, JWT_SECRET);
 };
 const signin = async (req, res, next) => {
   try {

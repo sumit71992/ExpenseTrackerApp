@@ -2,7 +2,7 @@ const Expense = require("../models/expenseModel");
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 const sequelize = require("../util/database");
-
+const AWS = require('aws-sdk');
 exports.addExpense = async (req, res, next) => {
   const t = await sequelize.transaction();
   try {
@@ -117,3 +117,37 @@ exports.getLeaderboard = async (req, res) => {
     console.log(err);
   }
 };
+
+exports.downloadExpense = async (req,res)=>{
+  try{
+const expenses = await req.user.getExpenses();
+const stringifiedExpenses = JSON.stringify(expenses);
+const filename = 'Expense.txt';
+const fileURL = uploadToS3(stringifiedExpenses, filename);
+res.status(200).json({fileURL, message:"Uploaded successfully"})
+  }catch(err){
+    console.log(err);
+  }
+};
+const uploadToS3 = async(data,filename)=>{
+  const BUCKET_NAME="skexpense";
+  const IAM_USER_KEY =process.env.AWS_USER_KEY;
+  const IAM_USER_SECRET=process.env.AWS_SECRET_KEY;
+  let s3bucket = new AWS.S3({
+    accessKeyId: IAM_USER_KEY,
+    secretAccessKey: IAM_USER_SECRET,
+    // Bucket: BUCKET_NAME
+  })
+  let fileDetails = {
+    Bucket:BUCKET_NAME,
+    Key: filename,
+    Body: data
+  }
+  s3bucket.upload(fileDetails,(err,response)=>{
+    if(err){
+      console.log("Something went wrong",err);
+    }else{
+      console.log("successfully uploaded",response);
+    }
+  })
+}

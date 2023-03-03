@@ -10,6 +10,8 @@ const User = require('./models/userModel');
 const Order = require('./models/orderModel');
 const Forgot = require('./models/forgotPasswordModel');
 
+require("dotenv").config();
+
 const app = express();
 
 const mainRoutes = require('./routes/expenseRoute');
