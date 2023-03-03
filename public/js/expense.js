@@ -909,6 +909,6 @@ document.querySelector(".download").addEventListener("click", async (e) => {
     a.download = 'myexpenses.csv';
     a.click();
   } catch (err) {
-    console.log(err)
+    console.log(err);
   }
 })
