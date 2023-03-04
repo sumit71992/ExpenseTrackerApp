@@ -38,7 +38,7 @@ const signup = async (req, res, next) => {
   }
 };
 const authUser = (id, name) => {
-  return jwt.sign({ userId: id, userName: name }, JWT_SECRET);
+  return jwt.sign({ userId: id, userName: name }, process.env.JWT_SECRET);
 };
 const signin = async (req, res, next) => {
   try {
