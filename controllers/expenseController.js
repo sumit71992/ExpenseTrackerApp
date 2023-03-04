@@ -1,5 +1,4 @@
 const Expense = require("../models/expenseModel");
-const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 const sequelize = require("../util/database");
 const UserServices = require("../services/userServices");
