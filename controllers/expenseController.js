@@ -2,7 +2,9 @@ const Expense = require("../models/expenseModel");
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 const sequelize = require("../util/database");
-const AWS = require('aws-sdk');
+const UserServices = require("../services/userServices");
+const S3Services = require('../services/s3Services');
+
 exports.addExpense = async (req, res, next) => {
   const t = await sequelize.transaction();
   try {
@@ -120,41 +122,13 @@ exports.getLeaderboard = async (req, res) => {
 
 exports.downloadExpense = async (req, res) => {
   try {
-    const expenses = await req.user.getExpenses();
+    const expenses = await UserServices.getExpenses(req);
     const stringifiedExpenses = JSON.stringify(expenses);
     const filename = `Expense${req.user.id}/${Date.now()}.txt`;
-    const fileURL = await uploadToS3(stringifiedExpenses, filename);
+    const fileURL = await S3Services.uploadToS3(stringifiedExpenses, filename);
     return res.status(200).json({ fileURL, message: "Uploaded successfully" })
   } catch (err) {
     console.log(err);
   }
 };
-const uploadToS3 = async (data, filename) => {
-  try {
-    const BUCKET_NAME = "skexpense";
-    const IAM_USER_KEY = process.env.AWS_USER_KEY;
-    const IAM_USER_SECRET = process.env.AWS_SECRET_KEY;
-    let s3bucket = new AWS.S3({
-      accessKeyId: IAM_USER_KEY,
-      secretAccessKey: IAM_USER_SECRET,
-    })
-    let fileDetails = {
-      Bucket: BUCKET_NAME,
-      Key: filename,
-      Body: data,
-      ACL: 'public-read'
-    }
-    return new Promise((resolve, reject) => {
-      s3bucket.upload(fileDetails, (err, response) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(response.Location);
-        }
-      });
-    })
-  } catch (err) {
-    console.log(err);
-    return res.status(402).json({ err, message: "Something went wrong" });
-  }
-}
+
