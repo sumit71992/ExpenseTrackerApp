@@ -10,9 +10,8 @@ exports.addExpense = async (req, res, next) => {
   try {
     const { amount, description, category } = req.body;
     const userId = req.user.id;
-    await Expense.create(
+    await req.user.createExpense(
       {
-        userId,
         amount,
         description,
         category,
@@ -36,8 +35,8 @@ exports.addExpense = async (req, res, next) => {
 exports.getAllExpenses = async (req, res, next) => {
   try {
     const str = req.query.page;
-    const page = Number(str.split("=")[0]);
-    const ltd = Number(str.split("=")[1]);
+    const page = str?Number(str.split("=")[0]):1;
+    const ltd = str?Number(str.split("=")[1]):10;
 
     let count = await Expense.count({ where: { userId: req.user.id } });
     const isPremium = req.user.isPremium;
@@ -65,10 +64,7 @@ exports.deleteExpense = async (req, res, next) => {
   const t = await sequelize.transaction();
   try {
     const id = req.params.id;
-    const expense = await Expense.findByPk(id, {
-      where: { userId: req.user.id },
-      transaction: t,
-    });
+    const expense = await Expense.findByPk(id, {transaction: t});
     const usr = await User.findByPk(req.user.id, { transaction: t });
     usr.totalExpenses -= expense.amount;
     await t.commit();
@@ -78,6 +74,7 @@ exports.deleteExpense = async (req, res, next) => {
   } catch (err) {
     await t.rollback();
     console.log(err);
+    return res.status(500).json({err, message:"Something went wrong"});
   }
 };
 exports.getEditExpense = async (req, res, next) => {
