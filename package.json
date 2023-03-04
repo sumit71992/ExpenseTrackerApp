@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "NODE_ENV=production JWT_SECRET RAZORPAY_KEY_ID AWS_SECRET_KEY AWS_USER_KEY EMAIL_API_KEY RAZORPAY_KEY_SECRET node app.js",
+    "start": "NODE_ENV=production node app.js",
     "start-server": "node app.js",
     "start:dev": "nodemon app.js"
   },
